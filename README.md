@@ -7,7 +7,15 @@ Awanku Stack
 
 1. Clone this repo, then run `docker-compose up` in the closed repo
 
-1. Your development environment will be ready at http://awanku.xyz
+1. Your development environment will be ready at:
+
+    ```
+    Landing page: http://awanku.xyz
+
+    Console page: http://console.awanku.xyz
+
+    API: http://awanku.xyz
+    ```
 
 ## Stack
 
