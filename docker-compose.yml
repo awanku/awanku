@@ -14,7 +14,7 @@ services:
     build:
       context: ./console
       dockerfile: Dockerfile
-    command: nodemon --ext js,jsx,json,html --ignore ./node_modules --ignore ./.next --exec ./start.sh
+    command: nodemon --watch ./package.json --watch ./start.sh --exec ./start.sh
     working_dir: /app/console
     volumes:
       - ./console:/app/console
@@ -25,7 +25,7 @@ services:
     build:
       context: ./landing
       dockerfile: Dockerfile
-    command: nodemon --ext js,jsx,json,html --ignore ./node_modules --ignore ./.next --exec ./start.sh
+    command: nodemon --watch ./package.json --watch ./start.sh --exec ./start.sh
     working_dir: /app/landing
     volumes:
       - ./landing:/app/landing
