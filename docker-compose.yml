@@ -1,0 +1,36 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:1.19
+    volumes:
+      - ./docker/nginx/site.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+  core-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+  console-webui:
+    build:
+      context: ./console
+      dockerfile: Dockerfile
+    command: nodemon --ext js,jsx,json,html --ignore ./node_modules --ignore ./.next --exec ./start.sh
+    working_dir: /app/console
+    volumes:
+      - ./console:/app/console
+      - cache-yarn:/app/cache/yarn
+    environment:
+      - YARN_CACHE_FOLDER=/app/cache/yarn
+  landing-webui:
+    build:
+      context: ./landing
+      dockerfile: Dockerfile
+    command: nodemon --ext js,jsx,json,html --ignore ./node_modules --ignore ./.next --exec ./start.sh
+    working_dir: /app/landing
+    volumes:
+      - ./landing:/app/landing
+      - cache-yarn:/app/cache/yarn
+    environment:
+      - YARN_CACHE_FOLDER=/app/cache/yarn
+volumes:
+  cache-yarn:
