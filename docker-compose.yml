@@ -10,6 +10,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    command: make run-dev
+    working_dir: /app/backend
+    stop_grace_period: 1s
+    volumes:
+      - ./backend:/app/backend
+      - cache-go:/go
+    environment:
+      - DB_URL=postgres://postgres:secretpassword@db-main/awanku?sslmode=disable
   console-webui:
     build:
       context: ./console
@@ -32,5 +40,11 @@ services:
       - cache-yarn:/app/cache/yarn
     environment:
       - YARN_CACHE_FOLDER=/app/cache/yarn
+  db-main:
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=awanku
+      - POSTGRES_PASSWORD=secretpassword
 volumes:
   cache-yarn:
+  cache-go:
