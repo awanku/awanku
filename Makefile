@@ -13,6 +13,9 @@ db-clean:
 db-version:
 	docker-compose exec core-api ./database/version.sh
 
+db-nuke:
+	docker-compose exec core-api ./database/nuke.sh
+
 test-backend:
 	docker-compose exec core-api make test
 

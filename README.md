@@ -14,7 +14,7 @@ Awanku Stack
 
     Console page: http://console.awanku.xyz
 
-    API: http://awanku.xyz
+    API: http://api.awanku.xyz
     ```
 
 ## Stack
