@@ -5,7 +5,21 @@ Awanku Stack
 
 1. Install Docker https://docs.docker.com/get-docker/
 
-1. Clone this repo, then run `docker-compose up` in the closed repo
+1. Clone this repo, then run:
+
+    ```
+    make run-build
+    ```
+
+1. Nex you need to run database migration, in another tab run:
+
+
+    ```
+    make db-migrate
+    ```
+
+    **TIP**: you can use `make db-nuke` then `make db-migrate` to revert your database into clean state.
+
 
 1. Your development environment will be ready at:
 
