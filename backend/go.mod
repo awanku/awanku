@@ -2,37 +2,23 @@ module github.com/awanku/awanku/backend
 
 go 1.14
 
+replace github.com/asasmoyo/pq-hansip => ./lib/pq-hansip
+
 require (
-	cloud.google.com/go/spanner v1.6.0 // indirect
-	cloud.google.com/go/storage v1.9.0 // indirect
-	github.com/ClickHouse/clickhouse-go v1.4.0 // indirect
-	github.com/aws/aws-sdk-go v1.31.12 // indirect
-	github.com/cockroachdb/cockroach-go v0.0.0-20200528011702-6cc4ff37a11e // indirect
-	github.com/cznic/mathutil v0.0.0-20181122101859-297441e03548 // indirect
-	github.com/denisenkom/go-mssqldb v0.0.0-20200428022330-06a60b6afbbc // indirect
-	github.com/edsrzf/mmap-go v1.0.0 // indirect
-	github.com/go-macaron/inject v0.0.0-20200308113650-138e5925c53b // indirect
-	github.com/gocql/gocql v0.0.0-20200526081602-cd04bd7f22a7 // indirect
+	cloud.google.com/go v0.57.0 // indirect
+	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
+	github.com/asasmoyo/pq-hansip v0.0.0-20190502052219-d515e288ee85
+	github.com/go-chi/chi v4.1.2+incompatible
+	github.com/go-ozzo/ozzo-validation/v4 v4.2.1
+	github.com/go-pg/pg/v10 v10.0.0-beta.1
 	github.com/golang-migrate/migrate/v4 v4.11.0
-	github.com/hashicorp/go-retryablehttp v0.6.6 // indirect
-	github.com/jackc/pgconn v1.5.0 // indirect
-	github.com/jcmturner/gokrb5/v8 v8.3.0 // indirect
-	github.com/klauspost/compress v1.10.8 // indirect
-	github.com/lib/pq v1.6.0 // indirect
-	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
-	github.com/nakagami/firebirdsql v0.0.0-20200606095443-fa78fa0c1aa0 // indirect
-	github.com/shopspring/decimal v1.2.0 // indirect
-	github.com/unknwon/com v1.0.1 // indirect
-	github.com/xanzy/go-gitlab v0.32.1 // indirect
-	go.mongodb.org/mongo-driver v1.3.4 // indirect
+	github.com/google/go-github v17.0.0+incompatible
+	github.com/gorilla/securecookie v1.1.1
+	github.com/segmentio/encoding v0.1.13 // indirect
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9 // indirect
-	golang.org/x/exp v0.0.0-20200513190911-00229845015e // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect
-	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
-	golang.org/x/tools v0.0.0-20200606014950-c42cb6316fb6 // indirect
+	google.golang.org/api v0.26.0
 	google.golang.org/genproto v0.0.0-20200605102947-12044bf5ea91 // indirect
-	gopkg.in/ini.v1 v1.57.0 // indirect
-	gopkg.in/macaron.v1 v1.3.8
-	modernc.org/ql v1.1.0 // indirect
 )

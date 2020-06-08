@@ -12,9 +12,9 @@ create table resources (
 );
 
 create table resource_logs (
-    resource_id bigint not null,
+    resource_id bigint not null references resources(id),
     payload varchar(2000) not null,
     created_at timestamp with time zone not null default 'now()'
 );
 
-create index order_resource_logs on resource_logs(resource_id, created_at DESC);
+create index order_resource_logs on resource_logs(resource_id, created_at desc);

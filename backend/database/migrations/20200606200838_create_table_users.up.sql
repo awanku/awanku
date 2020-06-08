@@ -2,8 +2,8 @@ create table users (
     id serial4 primary key,
     name varchar(300) not null,
     email varchar(500) not null,
-    google_login_email varchar(500) not null,
-    github_login_username varchar(200) not null,
+    google_login_email varchar(500),
+    github_login_username varchar(200),
     created_at timestamp with time zone not null default 'now()',
     updated_at timestamp with time zone,
     deleted_at timestamp with time zone
