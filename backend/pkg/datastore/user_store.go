@@ -12,10 +12,11 @@ type UserStore struct {
 	db *hansip.Cluster
 }
 
-func (s *UserStore) Create(user *model.User) error {
+func (s *UserStore) FindOrCreateByEmail(user *model.User) error {
 	var query = `
         insert into users (name, email, google_login_email, github_login_username)
         values (?, ?, ?, ?)
+        on conflict (email) do update set updated_at = now()
         returning id, created_at
     `
 

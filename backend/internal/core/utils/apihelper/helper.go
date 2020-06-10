@@ -5,29 +5,35 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 func JSON(w http.ResponseWriter, status int, payload interface{}) {
+	w.WriteHeader(status)
 	w.Header().Add("content-type", "application/json")
 
 	err := json.NewEncoder(w).Encode(payload)
 	if err != nil {
 		panic(fmt.Errorf("failed to marshal json: %v", err))
 	}
-	w.WriteHeader(status)
 }
 
-func BadRequestErrResp(w http.ResponseWriter, payload interface{}) {
-	if _, ok := payload.(validation.Errors); ok {
-		JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"errors": payload,
-		})
-		return
-	}
+func ValidationErrResp(w http.ResponseWriter, payload interface{}) {
+	// TODO: also handle internal error in validation
+	BadRequestErrResp(w, "validation_error", payload)
+}
 
-	JSON(w, http.StatusBadRequest, payload)
+func BadRequestErrResp(w http.ResponseWriter, errType string, payload interface{}) {
+	JSON(w, http.StatusBadRequest, map[string]interface{}{
+		"type":   errType,
+		"errors": payload,
+	})
+}
+
+func UnauthorizedAccessResp(w http.ResponseWriter, errType string, payload interface{}) {
+	JSON(w, http.StatusUnauthorized, map[string]interface{}{
+		"type":   errType,
+		"errors": payload,
+	})
 }
 
 func InternalServerErrResp(w http.ResponseWriter, err error) {

@@ -7,6 +7,8 @@ import (
 
 	hansip "github.com/asasmoyo/pq-hansip"
 	"github.com/awanku/awanku/backend/internal/core/auth"
+	ourMiddleware "github.com/awanku/awanku/backend/internal/core/middleware"
+	"github.com/awanku/awanku/backend/internal/core/user"
 	"github.com/awanku/awanku/backend/pkg/datastore"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -15,13 +17,17 @@ import (
 
 type Server struct {
 	router      chi.Router
-	authService auth.Auth
+	authService auth.AuthService
+	userService user.UserService
+	m           *ourMiddleware.Middleware
 	db          *hansip.Cluster
 }
 
 func (s *Server) Init() error {
 	s.router = chi.NewRouter()
 	s.router.Use(middleware.Logger)
+
+	var oauthTokenSecretKey = []byte("supersecretkey")
 
 	opt, err := pg.ParseURL(os.Getenv("DB_URL"))
 	if err != nil {
@@ -38,10 +44,22 @@ func (s *Server) Init() error {
 	ds := datastore.DataStore{DB: s.db}
 	ds.Init()
 
-	s.authService = auth.Auth{
-		Storage: ds.UserStore(),
+	s.authService = auth.AuthService{
+		OauthTokenSecretKey: oauthTokenSecretKey,
+		UserStore:           ds.UserStore(),
+		AuthStore:           ds.AuthStore(),
 	}
 	s.authService.Init()
+
+	s.userService = user.UserService{
+		UserStore: ds.UserStore(),
+	}
+	s.authService.Init()
+
+	s.m = &ourMiddleware.Middleware{
+		OauthTokenSecretKey: oauthTokenSecretKey,
+		AuthStore:           ds.AuthStore(),
+	}
 
 	s.initRoutes()
 	return nil

@@ -9,9 +9,9 @@ create table users (
     deleted_at timestamp with time zone
 );
 
-create unique index unique_email_on_users on users(email) where deleted_at is not null;
-create unique index unique_google_login_email_on_users on users(google_login_email) where deleted_at is not null;
-create unique index unique_github_login_username_on_users on users(github_login_username) where deleted_at is not null;
+create unique index unique_email_on_users on users(email);
+create unique index unique_google_login_email_on_users on users(google_login_email);
+create unique index unique_github_login_username_on_users on users(github_login_username);
 
 create type workspace_access_level as enum ('owner', 'editor', 'viewer');
 

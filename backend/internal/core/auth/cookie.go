@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/securecookie"
 )
 
+// TODO: move this to pkg
 type CookieManager struct {
 	instance *securecookie.SecureCookie
 }
