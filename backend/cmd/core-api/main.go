@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/awanku/awanku/backend/internal/core"
+	"github.com/awanku/awanku/internal/core"
 )
 
 func main() {

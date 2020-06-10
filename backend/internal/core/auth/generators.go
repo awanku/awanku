@@ -7,7 +7,7 @@ import (
 	"encoding/base64"
 	"time"
 
-	"github.com/awanku/awanku/backend/pkg/model"
+	"github.com/awanku/awanku/pkg/model"
 )
 
 func createRandomHash(length int) ([]byte, error) {

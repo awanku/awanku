@@ -1,4 +1,4 @@
-BASE_PKG := github.com/awanku/awanku/backend
+BASE_PKG := github.com/awanku/awanku
 
 build:
 	go build -o ./dist/core-api $(BASE_PKG)/cmd/core-api

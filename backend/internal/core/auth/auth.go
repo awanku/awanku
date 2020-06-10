@@ -10,11 +10,11 @@ import (
 
 	"github.com/gorilla/schema"
 
-	"github.com/awanku/awanku/backend/internal/core/contracts"
-	"github.com/awanku/awanku/backend/internal/core/utils"
-	"github.com/awanku/awanku/backend/internal/core/utils/apihelper"
-	"github.com/awanku/awanku/backend/pkg/model"
-	"github.com/awanku/awanku/backend/pkg/oauth2provider"
+	"github.com/awanku/awanku/internal/core/contracts"
+	"github.com/awanku/awanku/internal/core/utils"
+	"github.com/awanku/awanku/internal/core/utils/apihelper"
+	"github.com/awanku/awanku/pkg/model"
+	"github.com/awanku/awanku/pkg/oauth2provider"
 	"github.com/go-chi/chi"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"

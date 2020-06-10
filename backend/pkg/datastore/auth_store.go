@@ -2,7 +2,7 @@ package datastore
 
 import (
 	hansip "github.com/asasmoyo/pq-hansip"
-	"github.com/awanku/awanku/backend/pkg/model"
+	"github.com/awanku/awanku/pkg/model"
 )
 
 type AuthStore struct {

@@ -3,9 +3,9 @@ package user
 import (
 	"net/http"
 
-	"github.com/awanku/awanku/backend/internal/core/contracts"
-	"github.com/awanku/awanku/backend/internal/core/utils/apihelper"
-	"github.com/awanku/awanku/backend/internal/core/utils/ctxhelper"
+	"github.com/awanku/awanku/internal/core/contracts"
+	"github.com/awanku/awanku/internal/core/utils/apihelper"
+	"github.com/awanku/awanku/internal/core/utils/ctxhelper"
 )
 
 type UserService struct {

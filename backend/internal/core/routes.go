@@ -3,7 +3,7 @@ package core
 import (
 	"net/http"
 
-	"github.com/awanku/awanku/backend/internal/core/utils/apihelper"
+	"github.com/awanku/awanku/internal/core/utils/apihelper"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )

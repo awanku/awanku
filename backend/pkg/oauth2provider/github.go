@@ -3,7 +3,7 @@ package oauth2provider
 import (
 	"context"
 
-	"github.com/awanku/awanku/backend/pkg/model"
+	"github.com/awanku/awanku/pkg/model"
 	githubService "github.com/google/go-github/github"
 	"golang.org/x/oauth2"
 )

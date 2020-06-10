@@ -1,6 +1,6 @@
 package contracts
 
-import "github.com/awanku/awanku/backend/pkg/model"
+import "github.com/awanku/awanku/pkg/model"
 
 type AuthProvider interface {
 	LoginURL(state string) string

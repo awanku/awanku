@@ -1,4 +1,4 @@
-module github.com/awanku/awanku/backend
+module github.com/awanku/awanku
 
 go 1.14
 
