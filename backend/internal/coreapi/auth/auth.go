@@ -8,39 +8,37 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gorilla/schema"
-
-	"github.com/awanku/awanku/internal/core/contracts"
-	"github.com/awanku/awanku/internal/core/utils"
-	"github.com/awanku/awanku/internal/core/utils/apihelper"
-	"github.com/awanku/awanku/pkg/model"
+	"github.com/awanku/awanku/internal/coreapi/contract"
+	"github.com/awanku/awanku/internal/coreapi/utils/apihelper"
+	"github.com/awanku/awanku/pkg/core"
 	"github.com/awanku/awanku/pkg/oauth2provider"
 	"github.com/go-chi/chi"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
+	"github.com/gorilla/schema"
 )
 
-const authorizationCodeBufferLength = 15
+const authorizationCodeLength = 15
 const oauthTokensLength = 20
 
 type AuthService struct {
-	UserStore           contracts.UserStore
-	AuthStore           contracts.AuthStore
+	UserStore           contract.UserStore
+	AuthStore           contract.AuthStore
 	OauthTokenSecretKey []byte
 
 	config        *Config
 	cookieManager *CookieManager
 
-	providers map[string]contracts.AuthProvider
+	providers map[string]contract.AuthProvider
 }
 
 func (a *AuthService) Init() error {
-	a.providers = map[string]contracts.AuthProvider{
-		"github": &oauth2provider.GithubProvider{
-			Config: oauth2Config("development", "github"),
+	a.providers = map[string]contract.AuthProvider{
+		core.OauthProviderGithub: &oauth2provider.GithubProvider{
+			Config: oauth2Config("development", core.OauthProviderGithub),
 		},
-		"google": &oauth2provider.GoogleProvider{
-			Config: oauth2Config("development", "google"),
+		core.OauthProviderGoogle: &oauth2provider.GoogleProvider{
+			Config: oauth2Config("development", core.OauthProviderGoogle),
 		},
 	}
 	a.cookieManager = newCookieManager("12345678901234561234567890123456", "1234567890123456")
@@ -53,7 +51,7 @@ type getProviderConnectParam struct {
 	State      string `json:"state"`
 	UserID     string `json:"user_id"`
 
-	userStore contracts.UserStore
+	userStore contract.UserStore
 }
 
 func (p getProviderConnectParam) Validate() error {
@@ -73,7 +71,7 @@ func (p getProviderConnectParam) validateUserID() validation.RuleFunc {
 		}
 
 		userID, _ := strconv.ParseInt(valueStr, 10, 64)
-		user, err := p.userStore.FindByID(userID)
+		user, err := p.userStore.GetByID(userID)
 		if err != nil {
 			return validation.NewInternalError(err)
 		}
@@ -153,10 +151,10 @@ func (a *AuthService) HandleGetProviderCallback(w http.ResponseWriter, r *http.R
 	}
 	a.cookieManager.Destroy(w, "auth_data")
 
-	var user *model.User
+	var user *core.User
 	targetUserID, _ := strconv.ParseInt(sessionData["user_id"], 10, 64)
 	if targetUserID > 0 {
-		user, err = a.UserStore.FindByID(targetUserID)
+		user, err = a.UserStore.GetByID(targetUserID)
 		if err != nil {
 			apihelper.InternalServerErrResp(w, err)
 			return
@@ -173,24 +171,24 @@ func (a *AuthService) HandleGetProviderCallback(w http.ResponseWriter, r *http.R
 			return
 		}
 	} else {
-		user = &model.User{
+		user = &core.User{
 			Name:  userData.Name,
 			Email: userData.Email,
 		}
 		user.SetOauth2Identifier(userData.Provider, &userData.Identifier)
-		if err := a.UserStore.FindOrCreateByEmail(user); err != nil {
+		if err := a.UserStore.GetOrCreateByEmail(user); err != nil {
 			apihelper.InternalServerErrResp(w, err)
 			return
 		}
 	}
 
-	codeStr, err := buildAuthorizationCode(authorizationCodeBufferLength)
+	codeStr, err := core.BuildOauthAuthorizationCode(authorizationCodeLength)
 	if err != nil {
 		apihelper.InternalServerErrResp(w, err)
 		return
 	}
 
-	code, err := a.AuthStore.CreateAuthorizationCode(user.ID, codeStr)
+	code, err := a.AuthStore.CreateOauthAuthorizationCode(user.ID, codeStr)
 	if err != nil {
 		apihelper.InternalServerErrResp(w, err)
 		return
@@ -208,10 +206,10 @@ type postTokenParam struct {
 	Code         string `json:"code" schema:"code"`
 	RefreshToken string `json:"refresh_token" schema:"refresh_token"`
 
-	retrievedCode       *model.OauthAuthorizationCode
-	retrievedOauthToken *model.OauthToken
+	retrievedCode       *core.OauthAuthorizationCode
+	retrievedOauthToken *core.OauthToken
 
-	authStore           contracts.AuthStore
+	authStore           contract.AuthStore
 	oauthTokenSecretKey []byte
 }
 
@@ -235,7 +233,7 @@ func (p *postTokenParam) validateCode() validation.RuleFunc {
 		}
 
 		var err error
-		p.retrievedCode, err = p.authStore.GetAuthorizationCodeByCode(code)
+		p.retrievedCode, err = p.authStore.GetOauthAuthorizationCodeByCode(code)
 		if err != nil {
 			return validation.NewInternalError(err)
 		}
@@ -270,12 +268,12 @@ func (p *postTokenParam) validateRefreshToken() validation.RuleFunc {
 		}
 
 		tokenID, _ := strconv.ParseInt(tokenIDStr, 10, 64)
-		p.retrievedOauthToken, err = p.authStore.GetOauthToken(tokenID)
+		p.retrievedOauthToken, err = p.authStore.GetOauthTokenByID(tokenID)
 		if err != nil {
 			return validation.NewInternalError(err)
 		}
 
-		valid, err := utils.ValidateHmac(p.oauthTokenSecretKey, refreshTokenDecoded, p.retrievedOauthToken.RefreshTokenHash)
+		valid, err := core.ValidateHMAC(p.oauthTokenSecretKey, refreshTokenDecoded, p.retrievedOauthToken.RefreshTokenHash)
 		if err != nil {
 			return validation.NewInternalError(err)
 		}
@@ -310,7 +308,7 @@ func (a *AuthService) HandlePostToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := buildOauthToken(a.OauthTokenSecretKey, oauthTokensLength)
+	token, err := core.BuildOauthToken(a.OauthTokenSecretKey, oauthTokensLength)
 	if err != nil {
 		apihelper.InternalServerErrResp(w, err)
 		return

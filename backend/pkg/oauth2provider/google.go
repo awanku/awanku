@@ -3,7 +3,7 @@ package oauth2provider
 import (
 	"context"
 
-	"github.com/awanku/awanku/pkg/model"
+	"github.com/awanku/awanku/pkg/core"
 	"golang.org/x/oauth2"
 	googleService "google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
@@ -17,7 +17,7 @@ func (p *GoogleProvider) LoginURL(state string) string {
 	return p.Config.AuthCodeURL(state)
 }
 
-func (p *GoogleProvider) ExchangeCode(code string) (*model.AuthUserData, error) {
+func (p *GoogleProvider) ExchangeCode(code string) (*core.OauthUserData, error) {
 	token, err := p.Config.Exchange(context.Background(), code)
 	if err != nil {
 		return nil, err
@@ -34,8 +34,8 @@ func (p *GoogleProvider) ExchangeCode(code string) (*model.AuthUserData, error) 
 		return nil, err
 	}
 
-	userData := model.AuthUserData{
-		Provider:   "google",
+	userData := core.OauthUserData{
+		Provider:   core.OauthProviderGoogle,
 		Name:       remoteUserData.Name,
 		Email:      remoteUserData.Email,
 		Identifier: remoteUserData.Email,

@@ -1,11 +1,9 @@
 package main
 
-import (
-	"github.com/awanku/awanku/internal/core"
-)
+import "github.com/awanku/awanku/internal/coreapi"
 
 func main() {
-	srv := core.Server{}
+	srv := coreapi.Server{}
 	srv.Init()
 	srv.Start()
 }

@@ -1,18 +1,17 @@
-package datastore
+package core
 
 import (
 	"errors"
 	"time"
 
 	hansip "github.com/asasmoyo/pq-hansip"
-	"github.com/awanku/awanku/pkg/model"
 )
 
 type UserStore struct {
 	db *hansip.Cluster
 }
 
-func (s *UserStore) FindOrCreateByEmail(user *model.User) error {
+func (s *UserStore) GetOrCreateByEmail(user *User) error {
 	var query = `
         insert into users (name, email, google_login_email, github_login_username)
         values (?, ?, ?, ?)
@@ -34,13 +33,13 @@ func (s *UserStore) FindOrCreateByEmail(user *model.User) error {
 	return nil
 }
 
-func (s *UserStore) FindByID(id int64) (*model.User, error) {
+func (s *UserStore) GetByID(id int64) (*User, error) {
 	var query = `
         select *
         from users
         where id = ? and deleted_at is null
     `
-	var user model.User
+	var user User
 	err := s.db.Query(&user, query, id)
 	if err != nil {
 		return nil, err
@@ -48,7 +47,7 @@ func (s *UserStore) FindByID(id int64) (*model.User, error) {
 	return &user, nil
 }
 
-func (s *UserStore) Save(user *model.User) error {
+func (s *UserStore) Save(user *User) error {
 	if user.ID <= 0 {
 		return errors.New("model does not have id set")
 	}

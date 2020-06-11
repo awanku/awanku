@@ -7,15 +7,15 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/awanku/awanku/internal/core/contracts"
-	"github.com/awanku/awanku/internal/core/utils"
-	"github.com/awanku/awanku/internal/core/utils/apihelper"
-	"github.com/awanku/awanku/internal/core/utils/ctxhelper"
+	"github.com/awanku/awanku/internal/coreapi/contract"
+	"github.com/awanku/awanku/internal/coreapi/utils/apihelper"
+	"github.com/awanku/awanku/internal/coreapi/utils/ctxhelper"
+	"github.com/awanku/awanku/pkg/core"
 )
 
 type Middleware struct {
 	OauthTokenSecretKey []byte
-	AuthStore           contracts.AuthStore
+	AuthStore           contract.AuthStore
 }
 
 func (m *Middleware) ValidateOauthToken(next http.Handler) http.Handler {
@@ -62,13 +62,13 @@ func (m *Middleware) ValidateOauthToken(next http.Handler) http.Handler {
 			return
 		}
 
-		storedToken, err := m.AuthStore.GetOauthToken(tokenIDInt)
+		storedToken, err := m.AuthStore.GetOauthTokenByID(tokenIDInt)
 		if err != nil {
 			apihelper.InternalServerErrResp(w, err)
 			return
 		}
 
-		valid, err := utils.ValidateHmac(m.OauthTokenSecretKey, []byte(decodedAccessToken), storedToken.AccessTokenHash)
+		valid, err := core.ValidateHMAC(m.OauthTokenSecretKey, []byte(decodedAccessToken), storedToken.AccessTokenHash)
 		if err != nil {
 			apihelper.InternalServerErrResp(w, err)
 			return

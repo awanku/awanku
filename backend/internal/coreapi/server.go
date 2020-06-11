@@ -1,4 +1,4 @@
-package core
+package coreapi
 
 import (
 	"net/http"
@@ -6,10 +6,10 @@ import (
 	"time"
 
 	hansip "github.com/asasmoyo/pq-hansip"
-	"github.com/awanku/awanku/internal/core/auth"
-	ourMiddleware "github.com/awanku/awanku/internal/core/middleware"
-	"github.com/awanku/awanku/internal/core/user"
-	"github.com/awanku/awanku/pkg/datastore"
+	"github.com/awanku/awanku/internal/coreapi/auth"
+	ourMiddleware "github.com/awanku/awanku/internal/coreapi/middleware"
+	"github.com/awanku/awanku/internal/coreapi/user"
+	"github.com/awanku/awanku/pkg/core"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-pg/pg/v10"
@@ -33,32 +33,36 @@ func (s *Server) Init() error {
 	if err != nil {
 		panic(err)
 	}
-	s.db = &hansip.Cluster{
+	s.db = hansip.NewCluster(&hansip.Config{
 		Primary:        hansip.WrapGoPG(pg.Connect(opt)),
 		Replicas:       []hansip.SQL{hansip.WrapGoPG(pg.Connect(opt))},
 		PingTimeout:    1 * time.Second,
 		ConnCheckDelay: 5 * time.Second,
-	}
-	s.db.Init()
+	})
 
-	ds := datastore.DataStore{DB: s.db}
-	ds.Init()
+	cs, err := core.NewCoreService(&core.Config{
+		DB:                  s.db,
+		OauthTokenSecretKey: oauthTokenSecretKey,
+	})
+	if err != nil {
+		return err
+	}
 
 	s.authService = auth.AuthService{
 		OauthTokenSecretKey: oauthTokenSecretKey,
-		UserStore:           ds.UserStore(),
-		AuthStore:           ds.AuthStore(),
+		UserStore:           cs.UserStore(),
+		AuthStore:           cs.AuthStore(),
 	}
 	s.authService.Init()
 
 	s.userService = user.UserService{
-		UserStore: ds.UserStore(),
+		UserStore: cs.UserStore(),
 	}
 	s.authService.Init()
 
 	s.m = &ourMiddleware.Middleware{
 		OauthTokenSecretKey: oauthTokenSecretKey,
-		AuthStore:           ds.AuthStore(),
+		AuthStore:           cs.AuthStore(),
 	}
 
 	s.initRoutes()

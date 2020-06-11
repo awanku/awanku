@@ -3,7 +3,7 @@ package oauth2provider
 import (
 	"context"
 
-	"github.com/awanku/awanku/pkg/model"
+	"github.com/awanku/awanku/pkg/core"
 	githubService "github.com/google/go-github/github"
 	"golang.org/x/oauth2"
 )
@@ -16,7 +16,7 @@ func (p *GithubProvider) LoginURL(state string) string {
 	return p.Config.AuthCodeURL(state)
 }
 
-func (p *GithubProvider) ExchangeCode(code string) (*model.AuthUserData, error) {
+func (p *GithubProvider) ExchangeCode(code string) (*core.OauthUserData, error) {
 	token, err := p.Config.Exchange(context.Background(), code)
 	if err != nil {
 		return nil, err
@@ -49,8 +49,8 @@ func (p *GithubProvider) ExchangeCode(code string) (*model.AuthUserData, error) 
 		primaryEmail = emails[0].GetEmail()
 	}
 
-	userData := model.AuthUserData{
-		Provider:   "github",
+	userData := core.OauthUserData{
+		Provider:   core.OauthProviderGithub,
 		Name:       githubUser.GetName(),
 		Email:      primaryEmail,
 		Identifier: githubUser.GetLogin(),

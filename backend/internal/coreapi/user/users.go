@@ -3,9 +3,9 @@ package user
 import (
 	"net/http"
 
-	"github.com/awanku/awanku/internal/core/contracts"
-	"github.com/awanku/awanku/internal/core/utils/apihelper"
-	"github.com/awanku/awanku/internal/core/utils/ctxhelper"
+	contracts "github.com/awanku/awanku/internal/coreapi/contract"
+	"github.com/awanku/awanku/internal/coreapi/utils/apihelper"
+	"github.com/awanku/awanku/internal/coreapi/utils/ctxhelper"
 )
 
 type UserService struct {
@@ -18,7 +18,7 @@ func (s *UserService) Init() error {
 
 func (s *UserService) HandleGetMe(w http.ResponseWriter, r *http.Request) {
 	userID := ctxhelper.AuthenticatedUserID(r.Context())
-	user, err := s.UserStore.FindByID(userID)
+	user, err := s.UserStore.GetByID(userID)
 	if err != nil {
 		apihelper.InternalServerErrResp(w, err)
 		return

@@ -1,21 +1,20 @@
-package datastore
+package core
 
 import (
 	hansip "github.com/asasmoyo/pq-hansip"
-	"github.com/awanku/awanku/pkg/model"
 )
 
 type AuthStore struct {
 	db hansip.Cluster
 }
 
-func (s *AuthStore) CreateAuthorizationCode(userID int64, code string) (*model.OauthAuthorizationCode, error) {
+func (s *AuthStore) CreateOauthAuthorizationCode(userID int64, code string) (*OauthAuthorizationCode, error) {
 	var query = `
         insert into oauth_authorization_codes (user_id, code, expires_at)
         values (?, ?, now() + interval '5 minutes')
         returning *
     `
-	var codeObj model.OauthAuthorizationCode
+	var codeObj OauthAuthorizationCode
 	err := s.db.WriterQuery(&codeObj, query, userID, code)
 	if err != nil {
 		return nil, err
@@ -23,13 +22,13 @@ func (s *AuthStore) CreateAuthorizationCode(userID int64, code string) (*model.O
 	return &codeObj, nil
 }
 
-func (s *AuthStore) GetAuthorizationCodeByCode(code string) (*model.OauthAuthorizationCode, error) {
+func (s *AuthStore) GetOauthAuthorizationCodeByCode(code string) (*OauthAuthorizationCode, error) {
 	var query = `
         delete from oauth_authorization_codes
         where code = ? and expires_at > now()
         returning *
     `
-	var codeObj model.OauthAuthorizationCode
+	var codeObj OauthAuthorizationCode
 	err := s.db.Query(&codeObj, query, code)
 	if err != nil {
 		return nil, err
@@ -37,7 +36,7 @@ func (s *AuthStore) GetAuthorizationCodeByCode(code string) (*model.OauthAuthori
 	return &codeObj, nil
 }
 
-func (s *AuthStore) CreateOauthToken(token *model.OauthToken) error {
+func (s *AuthStore) CreateOauthToken(token *OauthToken) error {
 	var query = `
         insert into oauth_tokens (user_id, access_token_hash, refresh_token_hash, expires_at, requester_ip, requester_user_agent)
         values (?, ?, ?, ?, ?, ?)
@@ -54,13 +53,13 @@ func (s *AuthStore) CreateOauthToken(token *model.OauthToken) error {
 	return nil
 }
 
-func (s *AuthStore) GetOauthToken(id int64) (*model.OauthToken, error) {
+func (s *AuthStore) GetOauthTokenByID(id int64) (*OauthToken, error) {
 	var query = `
         select *
         from oauth_tokens
         where id = ? and expires_at > now() and deleted_at is null
     `
-	var token model.OauthToken
+	var token OauthToken
 	err := s.db.Query(&token, query, id)
 	if err != nil {
 		return nil, err

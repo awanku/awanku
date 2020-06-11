@@ -1,9 +1,9 @@
-package core
+package coreapi
 
 import (
 	"net/http"
 
-	"github.com/awanku/awanku/internal/core/utils/apihelper"
+	"github.com/awanku/awanku/internal/coreapi/utils/apihelper"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )
@@ -14,18 +14,7 @@ func (s *Server) initRoutes() {
 	})
 
 	s.router.Get("/status", func(w http.ResponseWriter, r *http.Request) {
-		var primaryOK bool
-		s.db.WriterQuery(&primaryOK, "select true;")
-
-		var replicaOK bool
-		s.db.Query(&replicaOK, "select true;")
-
-		apihelper.JSON(w, http.StatusOK, map[string]interface{}{
-			"database": map[string]bool{
-				"primary": primaryOK,
-				"replica": replicaOK,
-			},
-		})
+		apihelper.JSON(w, http.StatusOK, s.db.Health())
 	})
 
 	s.router.Route("/v1", func(r chi.Router) {
