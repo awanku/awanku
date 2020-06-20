@@ -22,7 +22,7 @@ jobs:
       run: |
         go get -v -t -d ./...
         make test
-  build-docker:
+  build:
     name: Build docker image and push to registry
     needs: [test]
     runs-on: ubuntu-latest
@@ -43,6 +43,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-18.04
     if: github.ref == 'refs/heads/master'
+    needs: [test, build]
     steps:
       - name: Check out code
         uses: actions/checkout@v2
