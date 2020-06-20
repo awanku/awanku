@@ -9,7 +9,10 @@ run:
 run-dev:
 	watchexec --watch . --exts go --signal SIGKILL --restart make run
 
+test: export DB_URL = postgres://postgres:@localhost/awanku?sslmode=disable
 test:
+	./database/nuke.sh
+	./database/up.sh
 	go test -v -race ./...
 
 docker-build: build

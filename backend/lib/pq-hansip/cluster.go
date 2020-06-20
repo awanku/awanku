@@ -42,8 +42,6 @@ func NewCluster(conf *Config) *Cluster {
 			conf.ConnCheckDelay/2,
 		),
 	}
-	go cluster.manager.updateActiveReplicas()
-	go cluster.manager.loop()
 	return &cluster
 }
 

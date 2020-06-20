@@ -19,13 +19,16 @@ type connectionManager struct {
 }
 
 func newConnectionManager(primary *connection, replicas []*connection, connCheckDelay time.Duration) *connectionManager {
-	return &connectionManager{
+	manager := &connectionManager{
 		primary:        primary,
 		replicas:       replicas,
 		mut:            sync.RWMutex{},
 		connCheckDelay: connCheckDelay,
 		quitChan:       make(chan struct{}),
 	}
+	manager.updateActiveReplicas()
+	go manager.loop()
+	return manager
 }
 
 func (m *connectionManager) loop() {

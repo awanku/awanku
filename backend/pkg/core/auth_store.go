@@ -5,7 +5,7 @@ import (
 )
 
 type AuthStore struct {
-	db *hansip.Cluster
+	DB *hansip.Cluster
 }
 
 func (s *AuthStore) CreateOauthAuthorizationCode(userID int64, code string) (*OauthAuthorizationCode, error) {
@@ -15,7 +15,7 @@ func (s *AuthStore) CreateOauthAuthorizationCode(userID int64, code string) (*Oa
         returning *
     `
 	var codeObj OauthAuthorizationCode
-	err := s.db.WriterQuery(&codeObj, query, userID, code)
+	err := s.DB.WriterQuery(&codeObj, query, userID, code)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (s *AuthStore) GetOauthAuthorizationCodeByCode(code string) (*OauthAuthoriz
         returning *
     `
 	var codeObj OauthAuthorizationCode
-	err := s.db.Query(&codeObj, query, code)
+	err := s.DB.Query(&codeObj, query, code)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (s *AuthStore) CreateOauthToken(token *OauthToken) error {
     `
 
 	var id int64
-	err := s.db.WriterQuery(&id, query, token.UserID, token.AccessTokenHash, token.RefreshTokenHash, token.ExpiresAt, token.RequesterIP, token.RequesterUserAgent)
+	err := s.DB.WriterQuery(&id, query, token.UserID, token.AccessTokenHash, token.RefreshTokenHash, token.ExpiresAt, token.RequesterIP, token.RequesterUserAgent)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (s *AuthStore) GetOauthTokenByID(id int64) (*OauthToken, error) {
         where id = ? and expires_at > now() and deleted_at is null
     `
 	var token OauthToken
-	err := s.db.Query(&token, query, id)
+	err := s.DB.Query(&token, query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -73,5 +73,5 @@ func (s *AuthStore) DeleteOauthToken(id int64) error {
         set deleted_at = now()
         where id = ?
     `
-	return s.db.WriterExec(query, id)
+	return s.DB.WriterExec(query, id)
 }

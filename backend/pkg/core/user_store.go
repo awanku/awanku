@@ -8,7 +8,7 @@ import (
 )
 
 type UserStore struct {
-	db *hansip.Cluster
+	DB *hansip.Cluster
 }
 
 func (s *UserStore) GetOrCreateByEmail(user *User) error {
@@ -16,20 +16,22 @@ func (s *UserStore) GetOrCreateByEmail(user *User) error {
         insert into users (name, email, google_login_email, github_login_username)
         values (?, ?, ?, ?)
         on conflict (email) do update set updated_at = now()
-        returning id, created_at
+        returning id, created_at, updated_at
     `
 
 	returned := struct {
 		ID        int64
 		CreatedAt time.Time
+		UpdatedAt *time.Time
 	}{}
-	err := s.db.WriterQuery(&returned, query, user.Name, user.Email, user.GoogleLoginEmail, user.GithubLoginUsername)
+	err := s.DB.WriterQuery(&returned, query, user.Name, user.Email, user.GoogleLoginEmail, user.GithubLoginUsername)
 	if err != nil {
 		return err
 	}
 
 	user.ID = returned.ID
 	user.CreatedAt = returned.CreatedAt
+	user.UpdatedAt = returned.UpdatedAt
 	return nil
 }
 
@@ -40,7 +42,7 @@ func (s *UserStore) GetByID(id int64) (*User, error) {
         where id = ? and deleted_at is null
     `
 	var user User
-	err := s.db.Query(&user, query, id)
+	err := s.DB.Query(&user, query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -59,9 +61,10 @@ func (s *UserStore) Save(user *User) error {
         returning updated_at
     `
 	var updatedAt time.Time
-	err := s.db.WriterQuery(&updatedAt, query, user.Name, user.Email, user.GoogleLoginEmail, user.GithubLoginUsername, user.ID)
+	err := s.DB.WriterQuery(&updatedAt, query, user.Name, user.Email, user.GoogleLoginEmail, user.GithubLoginUsername, user.ID)
 	if err != nil {
 		return err
 	}
+	user.UpdatedAt = &updatedAt
 	return nil
 }

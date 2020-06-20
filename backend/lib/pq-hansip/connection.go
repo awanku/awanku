@@ -45,7 +45,7 @@ func newConnection(s SQL, pingTimeout, connCheckDelay time.Duration) *connection
 	}
 
 	// start main loop
-	go conn.updateStatus()
+	conn.updateStatus()
 	go conn.loop()
 
 	return conn
