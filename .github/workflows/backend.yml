@@ -43,7 +43,6 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -51,7 +50,6 @@ jobs:
         run: sudo apt-get install -y --no-install-recommends openvpn gzip
       - name: Connect VPN
         run: |
-          set -x
           echo "${SECRET}" > secret.txt
           chmod 600 secret.txt
           sudo openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
@@ -59,8 +57,16 @@ jobs:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
         run: |
+          attempt=1
           until $( curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646 )
           do
+            attempt=$(( attempt + 1))
+            if $attempt == 10; then
+              cat openvpn.log
+              exit 1
+            fi
+
+            echo 'not connected, retrying...'
             sleep 3
           done
       - name: Install Nomad binary
