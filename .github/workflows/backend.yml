@@ -67,8 +67,9 @@ jobs:
               exit 1
             fi
 
-            dig nomad.service.consul
-            dig nomad.service.consul @10.99.0.193
+            dig nomad.service.consul || true
+            dig nomad.service.consul @10.99.0.193 || true
+
             echo 'not connected, retrying...'
             sleep 5
           done
