@@ -2,8 +2,10 @@ name: landing-webui
 
 on:
   push:
-    branches: [ master ]
-  pull_request: {}
+    branches: [master]
+    paths:
+      - landing/**
+      - awanku-systems.hcl
 
 jobs:
   build:
