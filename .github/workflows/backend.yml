@@ -46,7 +46,7 @@ jobs:
     needs: [test, build-docker]
     runs-on: ubuntu-latest
     steps:
-      - name: Install Open VPN
+      - name: Install packages
         run: sudo apt-get install -y --no-install-recommends openvpn gzip
       - name: Connect VPN
         uses: golfzaptw/action-connect-ovpn@master
