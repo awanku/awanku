@@ -45,7 +45,7 @@ job "awanku-systems" {
                 ]
             }
             env {
-                DB_URL = "postgres://awanku:awanku@${NOMAD_IP_postgresql_pg}:${NOMAD_PORT_postgresql_pg}/awanku"
+                DB_URL = "postgres://awanku:rahasia@${NOMAD_IP_postgresql_pg}:${NOMAD_PORT_postgresql_pg}/awanku?sslmode=disable"
             }
             resources {
                 network {
