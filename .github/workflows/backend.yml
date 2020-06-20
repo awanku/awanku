@@ -47,21 +47,21 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Install packages
-        run: sudo apt-get install -y --no-install-recommends openvpn gzip curl
+        run: apt-get install -y --no-install-recommends openvpn gzip curl
       - name: Connect VPN
         run: |
           echo "${SECRET}" > secret.txt
           chmod 600 secret.txt
-          sudo openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
+          openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
         env:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
         run: |
           attempt=1
-          until $( curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646 )
+          until curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646
           do
-            attempt=$(( attempt + 1))
-            if $attempt == 10; then
+            attempt=$((attempt + 1))
+            if [[ "${attempt}" == "5" ]]; then
               cat openvpn.log
               exit 1
             fi
@@ -81,4 +81,4 @@ jobs:
         if: always()
         run: |
           cat openvpn.log
-          sudo killall openvpn
+          killall openvpn
