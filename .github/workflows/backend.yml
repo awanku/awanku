@@ -62,7 +62,7 @@ jobs:
           do
             attempt=$((attempt + 1))
             if [[ "${attempt}" == "5" ]]; then
-              cat openvpn.log
+              sudo cat openvpn.log
               exit 1
             fi
 
@@ -80,5 +80,5 @@ jobs:
       - name: Stop VPN
         if: always()
         run: |
-          cat openvpn.log
+          sudo cat openvpn.log
           killall openvpn
