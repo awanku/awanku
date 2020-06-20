@@ -1,0 +1,87 @@
+name: core-api
+
+on:
+  push:
+    branches: [ master ]
+  pull_request: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.14.x
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+          ref: ${{ github.ref }}
+    - name: Build
+      working-directory: ./backend
+      run: |
+        go get -v -t -d ./...
+        make test
+  build:
+    runs-on: ubuntu-18.04
+    if: github.ref == 'refs/heads/master'
+    needs: [test]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Build docker image and push
+        uses: docker/build-push-action@v1
+        with:
+          path: ./backend
+          dockerfile: ./backend/docker/Production.dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.awanku.id
+          repository: awanku/core-api
+          tags: latest
+  deploy:
+    runs-on: ubuntu-18.04
+    if: github.ref == 'refs/heads/master'
+    needs: [test, build]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Install packages
+        run: sudo apt-get install -y --no-install-recommends openvpn unzip curl openvpn-systemd-resolved
+      - name: Connect VPN
+        run: |
+          echo "${SECRET}" > secret.txt
+          sudo openvpn --verb 6 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
+        env:
+          SECRET: ${{ secrets.OPENVPN_SECRET }}
+      - name: Wait until VPN is up
+        run: |
+          attempt=1
+          until $( curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646 )
+          do
+            attempt=$((attempt + 1))
+            if [[ "${attempt}" == "10" ]]; then
+              sudo cat openvpn.log
+              exit 1
+            fi
+
+            echo 'not connected, retrying...'
+            sleep 5
+          done
+          echo 'connected to VPN!'
+      - name: Install Nomad binary
+        run: |
+          curl -sL -o nomad.zip https://releases.hashicorp.com/nomad/0.11.3/nomad_0.11.3_linux_amd64.zip
+          sudo unzip nomad.zip -d /usr/bin/
+          sudo chmod +x /usr/bin/nomad
+      - name: Submit Nomad job
+        run: /usr/bin/nomad run awanku-systems.hcl
+        env:
+          NOMAD_ADDR: http://nomad.service.consul:4646
+      - name: Kill VPN
+        if: always()
+        run: sudo kill -9 $(pidof openvpn) || true
