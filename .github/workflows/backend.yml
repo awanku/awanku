@@ -54,7 +54,7 @@ jobs:
           echo "${SECRET}" > secret.txt
           chmod 600 secret.txt
           sudo openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon
-          until $(curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646) ; do ; sleep 3 ; done
+          until curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646 ; do ; sleep 3 ; done
           echo 'Connected to nomad cluster!'
         env:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
@@ -66,6 +66,6 @@ jobs:
         run: nomad run awanku-systems.hcl
         env:
           NOMAD_ADDR: http://nomad.service.consul:4646
-      - name: Kill vpn
+      - name: Stop VPN
         if: always()
         run: sudo killall openvpn
