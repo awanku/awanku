@@ -47,7 +47,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Install packages
-        run: apt-get install -y --no-install-recommends openvpn gzip curl
+        run: sudo apt-get install -y --no-install-recommends openvpn gzip curl
       - name: Connect VPN
         run: |
           echo "${SECRET}" > secret.txt
