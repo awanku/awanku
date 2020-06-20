@@ -23,8 +23,9 @@ jobs:
         go get -v -t -d ./...
         make test
   build:
-    needs: [test]
     runs-on: ubuntu-18.04
+    if: github.ref == 'refs/heads/master'
+    needs: [test]
     steps:
       - name: Check out code
         uses: actions/checkout@v2
