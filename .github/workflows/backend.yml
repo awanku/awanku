@@ -57,8 +57,9 @@ jobs:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
         run: |
+          set -x
           attempt=1
-          until curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646
+          until $( curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646 )
           do
             attempt=$((attempt + 1))
             if [[ "${attempt}" == "10" ]]; then
@@ -67,7 +68,7 @@ jobs:
             fi
 
             echo 'not connected, retrying...'
-            sleep 3
+            sleep 5
           done
       - name: Install Nomad binary
         run: |
