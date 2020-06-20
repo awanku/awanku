@@ -5,8 +5,27 @@ on:
     branches: [ master ]
 
 jobs:
+  check_dir:
+    runs-on: ubuntu-18.04
+    outputs:
+      dirty: ${{ steps.check_dir.outputs.dirty }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Check dir if build is needed
+        id: check_dir
+        run: |
+          if [[ $( git diff origin/master... | cat ) == '' ]]; then
+            echo "::set-output name=dirty::no"
+          else
+            echo "::set-output name=dirty::yes"
+          fi
   build:
     runs-on: ubuntu-18.04
+    needs: [check_dir]
+    if: ${{ needs.check_dir.outputs.dirty }} == 'no'
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -24,7 +43,8 @@ jobs:
           tags: latest
   deploy:
     runs-on: ubuntu-18.04
-    needs: [build]
+    needs: [check_dir, build]
+    if: ${{ needs.check_dir.outputs.dirty }} == 'no'
     steps:
       - name: Check out code
         uses: actions/checkout@v2
