@@ -70,6 +70,7 @@ jobs:
             echo 'not connected, retrying...'
             sleep 5
           done
+          echo 'connected to VPN!'
       - name: Install Nomad binary
         run: |
           curl -sL -o nomad.zip https://releases.hashicorp.com/nomad/0.11.3/nomad_0.11.3_linux_amd64.zip
@@ -81,4 +82,4 @@ jobs:
           NOMAD_ADDR: http://nomad.service.consul:4646
       - name: Kill VPN
         if: always()
-        run: kill -9 $(cat openvpn.pid) || true
+        run: sudo kill -9 $(cat openvpn.pid) || true
