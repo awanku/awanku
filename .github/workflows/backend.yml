@@ -52,6 +52,7 @@ jobs:
         run: |
           echo "${SECRET}" > secret.txt
           sudo openvpn --verb 6 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
+          echo $! > openvpn.pid
         env:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
@@ -77,3 +78,6 @@ jobs:
         run: /usr/bin/nomad run awanku-systems.hcl
         env:
           NOMAD_ADDR: http://nomad.service.consul:4646
+      - name: Kill VPN
+        if: always()
+        run: kill -9 $(cat openvpn.pid) || true
