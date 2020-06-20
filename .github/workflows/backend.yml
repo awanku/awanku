@@ -52,7 +52,7 @@ jobs:
         run: |
           echo "${SECRET}" > secret.txt
           chmod 600 secret.txt
-          openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
+          sudo openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
         env:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
