@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           path: ./backend
-          dockerfile: ./docker/Production.dockerfile
+          dockerfile: ./backend/docker/Production.dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: docker.awanku.id
