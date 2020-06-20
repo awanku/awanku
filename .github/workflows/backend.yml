@@ -61,7 +61,7 @@ jobs:
           until curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646
           do
             attempt=$((attempt + 1))
-            if [[ "${attempt}" == "5" ]]; then
+            if [[ "${attempt}" == "10" ]]; then
               sudo cat openvpn.log
               exit 1
             fi
