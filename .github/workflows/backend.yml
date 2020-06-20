@@ -21,11 +21,13 @@ jobs:
       working-directory: ./backend
       run: |
         go get -v -t -d ./...
-        make test   
+        make test
   build-docker:
     name: Build docker image and push
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
       - name: Build docker image and push
         uses: docker/build-push-action@v1
         with:
