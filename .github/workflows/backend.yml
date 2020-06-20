@@ -51,7 +51,7 @@ jobs:
           set -x
           echo "${SECRET}" > secret.txt
           chmod 600 secret.txt
-          sudo openvpn --verb 3 --config .github/vpn.ovpn --askpass secret.txt --daemon
+          sudo openvpn --verb 3 --config $(pwd)/.github/vpn.ovpn --askpass secret.txt --daemon
           until $(curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646) ; do ; sleep 3 ; done
           echo 'Connected to nomad cluster!'
         env:
