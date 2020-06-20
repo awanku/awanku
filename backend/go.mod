@@ -16,6 +16,11 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/gorilla/schema v1.1.0
 	github.com/gorilla/securecookie v1.1.1
+	github.com/segmentio/encoding v0.1.14 // indirect
+	go.opencensus.io v0.22.4 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	google.golang.org/api v0.26.0
+	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1 // indirect
+	golang.org/x/text v0.3.3 // indirect
+	google.golang.org/api v0.28.0
+	google.golang.org/genproto v0.0.0-20200619004808-3e7fca5c55db // indirect
 )
