@@ -2,8 +2,14 @@ name: core-api
 
 on:
   push:
-    branches: [ master ]
-  pull_request: {}
+    branches: [master]
+    paths:
+      - backend/**
+      - awanku-systems.hcl
+  pull_request:
+    paths:
+      - backend/**
+      - awanku-systems.hcl
 
 jobs:
   test:

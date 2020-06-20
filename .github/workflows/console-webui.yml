@@ -2,7 +2,10 @@ name: console-webui
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
+    paths:
+      - console/**
+      - awanku-systems.hcl
 
 jobs:
   build:
