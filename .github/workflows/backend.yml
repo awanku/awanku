@@ -47,7 +47,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Install packages
-        run: sudo apt-get install -y --no-install-recommends openvpn gzip curl
+        run: sudo apt-get install -y --no-install-recommends openvpn gzip curl dnsutils
       - name: Connect VPN
         run: |
           echo "${SECRET}" > secret.txt
@@ -67,6 +67,8 @@ jobs:
               exit 1
             fi
 
+            dig nomad.service.consul
+            dig nomad.service.consul @10.99.0.193
             echo 'not connected, retrying...'
             sleep 5
           done
