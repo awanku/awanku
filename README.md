@@ -1,6 +1,8 @@
 Awanku Stack
 ============
 
+![core-api](https://github.com/awanku/awanku/workflows/core-api/badge.svg?branch=master) ![console-webui](https://github.com/awanku/awanku/workflows/console-webui/badge.svg?branch=master) ![landing-webui](https://github.com/awanku/awanku/workflows/landing-webui/badge.svg?branch=master)
+
 ## Setting up development environment
 
 1. Install Docker https://docs.docker.com/get-docker/

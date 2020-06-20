@@ -3,7 +3,6 @@ name: landing-webui
 on:
   push:
     branches: [ master ]
-  pull_request: {}
 
 jobs:
   build:
@@ -25,8 +24,7 @@ jobs:
           tags: latest
   deploy:
     runs-on: ubuntu-18.04
-    if: github.ref == 'refs/heads/master'
-    needs: [test, build]
+    needs: [build]
     steps:
       - name: Check out code
         uses: actions/checkout@v2
