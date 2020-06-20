@@ -3,6 +3,7 @@ name: console-webui
 on:
   push:
     branches: [ master ]
+  pull_request: {}
 
 jobs:
   check_dir:
