@@ -53,7 +53,7 @@ jobs:
           echo "${SECRET}" > secret.txt
           chmod 600 secret.txt
           sudo openvpn --verb 6 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
-          sudo echo 'nameserver 10.99.0.193' > /etc/resolv.conf
+          echo 'nameserver 10.99.0.193' | sudo tee -a /etc/resolv.conf
         env:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
