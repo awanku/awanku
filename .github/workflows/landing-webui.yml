@@ -1,4 +1,4 @@
-name: Backend
+name: landing-webui
 
 on:
   push:
@@ -6,25 +6,9 @@ on:
   pull_request: {}
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Setup Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.14.x
-    - name: Check out code
-      uses: actions/checkout@v2
-      with:
-          ref: ${{ github.ref }}
-    - name: Build
-      working-directory: ./backend
-      run: |
-        go get -v -t -d ./...
-        make test
   build:
     needs: [test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -33,12 +17,12 @@ jobs:
       - name: Build docker image and push
         uses: docker/build-push-action@v1
         with:
-          path: ./backend
-          dockerfile: ./backend/docker/Production.dockerfile
+          path: ./landing
+          dockerfile: ./landing/docker/Production.dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: docker.awanku.id
-          repository: awanku/core-api
+          repository: awanku/landing-webui
           tags: latest
   deploy:
     runs-on: ubuntu-18.04
@@ -55,7 +39,6 @@ jobs:
         run: |
           echo "${SECRET}" > secret.txt
           sudo openvpn --verb 6 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
-          echo $! > openvpn.pid
         env:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
