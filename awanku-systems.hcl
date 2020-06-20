@@ -14,6 +14,7 @@ job "awanku-systems" {
                     username = "awanku"
                     password = "rahasia"
                 }
+                force_pull = true
                 port_map {
                     http = 3000
                 }
