@@ -42,6 +42,7 @@ job "awanku-systems" {
                     "traefik.http.routers.awanku-core-api-https.entrypoints=https",
                     "traefik.http.routers.awanku-core-api-https.tls=true",
                     "traefik.http.routers.awanku-core-api-https.tls.certresolver=gratisan",
+                    "traefik.http.routers.awanku-core-api-https.tls.options=default",
                 ]
             }
             env {
@@ -128,6 +129,7 @@ job "awanku-systems" {
                     "traefik.http.routers.awanku-landing-webui-https.entrypoints=https",
                     "traefik.http.routers.awanku-landing-webui-https.tls=true",
                     "traefik.http.routers.awanku-landing-webui-https.tls.certresolver=gratisan",
+                    "traefik.http.routers.awanku-landing-webui-https.tls.options=default",
                 ]
             }
             env {
@@ -177,6 +179,7 @@ job "awanku-systems" {
                     "traefik.http.routers.awanku-console-webui-https.entrypoints=https",
                     "traefik.http.routers.awanku-console-webui-https.tls=true",
                     "traefik.http.routers.awanku-console-webui-https.tls.certresolver=gratisan",
+                    "traefik.http.routers.awanku-console-webui-https.tls.options=default",
                 ]
             }
             env {
