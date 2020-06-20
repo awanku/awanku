@@ -63,4 +63,4 @@ jobs:
       - name: Kill vpn
         if: always()
         run: sudo killall openvpn
-        
+
