@@ -43,6 +43,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -53,7 +54,7 @@ jobs:
           set -x
           echo "${SECRET}" > secret.txt
           chmod 600 secret.txt
-          sudo openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon
+          sudo openvpn --verb 11 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
         env:
           SECRET: ${{ secrets.OPENVPN_SECRET }}
       - name: Wait until VPN is up
@@ -72,4 +73,6 @@ jobs:
           NOMAD_ADDR: http://nomad.service.consul:4646
       - name: Stop VPN
         if: always()
-        run: sudo killall openvpn
+        run: |
+          cat openvpn.log
+          sudo killall openvpn
