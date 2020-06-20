@@ -10,7 +10,7 @@ import (
 
 func (s *Server) initRoutes() {
 	s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("nothing's here, see https://awanku.id"))
+		w.Write([]byte("nothing's here, please go to https://awanku.id"))
 	})
 
 	s.router.Get("/status", func(w http.ResponseWriter, r *http.Request) {
