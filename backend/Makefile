@@ -11,3 +11,10 @@ run-dev:
 
 test:
 	go test -v -race ./...
+
+docker-build: build
+	docker build -f docker/Production.dockerfile -t awanku/core-api:latest .
+
+docker-push:
+	docker tag awanku/core-api:latest docker.awanku.id/awanku/core-api:latest
+	docker push docker.awanku.id/awanku/core-api:latest

@@ -5,7 +5,7 @@ import (
 )
 
 type AuthStore struct {
-	db hansip.Cluster
+	db *hansip.Cluster
 }
 
 func (s *AuthStore) CreateOauthAuthorizationCode(userID int64, code string) (*OauthAuthorizationCode, error) {

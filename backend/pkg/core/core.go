@@ -15,7 +15,10 @@ type CoreService struct {
 }
 
 func NewCoreService(conf *Config) (*CoreService, error) {
-	return nil, nil
+	return &CoreService{
+		userStore: &UserStore{db: conf.DB},
+		authStore: &AuthStore{db: conf.DB},
+	}, nil
 }
 
 func (s *CoreService) UserStore() *UserStore {
