@@ -50,10 +50,10 @@ jobs:
         run: sudo apt-get install -y --no-install-recommends openvpn gzip
       - name: Connect VPN
         run: |
-          echo "${SECRET}" > secret.txt \
-          chmod 600 secret.txt \
-          sudo openvpn --config .github/vpn.ovpn --askpass secret.txt --daemon \
-          until $(curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646) ; do ; echo 'not connected, retrying' ; sleep 3 ; done \
+          echo "${SECRET}" > secret.txt
+          chmod 600 secret.txt
+          sudo openvpn --config .github/vpn.ovpn --askpass secret.txt --daemon
+          until $(curl --output /dev/null --silent --head --fail --max-time 3 nomad.service.consul:4646) ; do ; echo 'not connected, retrying' ; sleep 3 ; done
           echo 'Connected to nomad cluster!'
         env:
           SECRET: ${{ secrets.VPN_SECRET }}
