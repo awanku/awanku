@@ -84,4 +84,4 @@ jobs:
           NOMAD_ADDR: http://nomad.service.consul:4646
       - name: Kill VPN
         if: always()
-        run: sudo kill -9 $(cat openvpn.pid) || true
+        run: sudo kill -9 $(pidof openvpn) || true
