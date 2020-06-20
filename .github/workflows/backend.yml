@@ -22,8 +22,10 @@ jobs:
       run: |
         go get -v -t -d ./...
         make test
+
   build-docker:
-    name: Build docker image and push
+    name: Build docker image and push to registry
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -38,3 +40,27 @@ jobs:
           registry: docker.awanku.id
           repository: awanku/core-api
           tags: latest
+
+  deploy:
+    name: Deploy
+    needs: [test, build-docker]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Open VPN
+        run: sudo apt-get install -y --no-install-recommends openvpn gzip
+      - name: Connect VPN
+        uses: golfzaptw/action-connect-ovpn@master
+        with:
+          PING_URL: '127.0.0.1'
+          FILE_OVPN: '.github/vpn.ovpn'
+          SECRET: ${{ secrets.VPN_SECRET }}
+      - name: Install Nomad binary
+        run: |
+          curl -sL https://releases.hashicorp.com/nomad/0.11.3/nomad_0.11.3_linux_amd64.zip | gunzip -c - > /usr/bin/nomad
+          chmod +x /usr/bin/nomad
+      - name: Submit Nomad job
+        run: nomad run awanku-systems.hcl
+      - name: Kill vpn
+        if: always()
+        run: sudo killall openvpn
+        
