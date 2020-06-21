@@ -33,6 +33,9 @@ func (s *AuthStore) GetOauthAuthorizationCodeByCode(code string) (*OauthAuthoriz
 	if err != nil {
 		return nil, err
 	}
+	if codeObj.Code == "" {
+		return nil, nil
+	}
 	return &codeObj, nil
 }
 
