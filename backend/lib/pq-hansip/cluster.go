@@ -6,9 +6,8 @@ import (
 )
 
 var (
-	ErrNoReplicaAvailable    = errors.New("no replica connection available")
-	ErrNoPrimaryAvailable    = errors.New("no primary connection available")
-	ErrClusterNotInitialized = errors.New("cluster was not initialized")
+	ErrNoReplicaAvailable = errors.New("no replica connection available")
+	ErrNoPrimaryAvailable = errors.New("no primary connection available")
 )
 
 type Config struct {
