@@ -5,11 +5,11 @@ on:
     branches: [master]
     paths:
       - backend/**
-      - awanku-systems.hcl
+      - .nomad/awanku-stack-core-api.hcl
   pull_request:
     paths:
       - backend/**
-      - awanku-systems.hcl
+      - .nomad/awanku-stack-core-api.hcl
 
 jobs:
   test:
@@ -96,7 +96,7 @@ jobs:
           sudo unzip nomad.zip -d /usr/bin/
           sudo chmod +x /usr/bin/nomad
       - name: Submit Nomad job
-        run: /usr/bin/nomad run awanku-systems.hcl
+        run: /usr/bin/nomad run .nomad/awanku-stack-core-api.hcl
         env:
           NOMAD_ADDR: http://nomad.service.consul:4646
       - name: Kill VPN
