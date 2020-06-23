@@ -41,7 +41,6 @@ job "awanku-stack-console" {
                     "traefik.http.routers.awanku-console-webui-https.rule=Host(`console.awanku.id`)",
                     "traefik.http.routers.awanku-console-webui-https.entrypoints=https",
                     "traefik.http.routers.awanku-console-webui-https.tls=true",
-                    "traefik.http.routers.awanku-console-webui-https.tls.certresolver=gratisan",
                     "traefik.http.routers.awanku-console-webui-https.tls.options=default",
                 ]
             }

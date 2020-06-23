@@ -41,7 +41,6 @@ job "awanku-stack-landing" {
                     "traefik.http.routers.awanku-stack-landing-webui-https.rule=Host(`awanku.id`)",
                     "traefik.http.routers.awanku-stack-landing-webui-https.entrypoints=https",
                     "traefik.http.routers.awanku-stack-landing-webui-https.tls=true",
-                    "traefik.http.routers.awanku-stack-landing-webui-https.tls.certresolver=gratisan",
                     "traefik.http.routers.awanku-stack-landing-webui-https.tls.options=default",
                 ]
             }

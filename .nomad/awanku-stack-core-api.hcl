@@ -40,7 +40,6 @@ job "awanku-stack-core-api" {
                     "traefik.http.routers.awanku-stack-core-api-https.rule=Host(`api.awanku.id`)",
                     "traefik.http.routers.awanku-stack-core-api-https.entrypoints=https",
                     "traefik.http.routers.awanku-stack-core-api-https.tls=true",
-                    "traefik.http.routers.awanku-stack-core-api-https.tls.certresolver=gratisan",
                     "traefik.http.routers.awanku-stack-core-api-https.tls.options=default",
                 ]
             }
