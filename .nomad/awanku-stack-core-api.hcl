@@ -1,9 +1,5 @@
 job "awanku-stack-core-api" {
     datacenters = ["dc1"]
-    constraint {
-        attribute = "${attr.unique.hostname}"
-        value = "s1-2-sgp1-1"
-    }
     group "core-api" {
         task "core-api" {
             driver = "docker"
