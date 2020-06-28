@@ -6,6 +6,7 @@ on:
     paths:
       - backend/**
       - .nomad/awanku-stack-core-api.hcl
+      - .github/vpn.ovpn
   pull_request:
     paths:
       - backend/**

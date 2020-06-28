@@ -6,6 +6,7 @@ on:
     paths:
       - console/**
       - .nomad/awanku-stack-console.yml
+      - .github/vpn.ovpn
 
 jobs:
   build:

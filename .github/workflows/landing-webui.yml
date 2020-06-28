@@ -6,6 +6,7 @@ on:
     paths:
       - landing/**
       - .nomad/awanku-stack-landing.hcl
+      - .github/vpn.ovpn
 
 jobs:
   build:
