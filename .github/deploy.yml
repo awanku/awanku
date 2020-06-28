@@ -1,0 +1,6 @@
+core_api_production:
+  auto_deploy_on: refs/heads/master
+  production_environment: false
+  required_context: ["core-api"]
+  payload:
+    app: core-api
