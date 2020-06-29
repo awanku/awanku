@@ -51,6 +51,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Build binary
+        working-directory: ./backend
         run: |
           go get -v -t -d ./...
           make build
