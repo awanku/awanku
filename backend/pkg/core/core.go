@@ -12,6 +12,7 @@ type CoreService struct {
 
 	userStore *UserStore
 	authStore *AuthStore
+    userSettingsStore *UserSettingsStore
 }
 
 func NewCoreService(conf *Config) (*CoreService, error) {
@@ -24,4 +25,8 @@ func (s *CoreService) UserStore() *UserStore {
 
 func (s *CoreService) AuthStore() *AuthStore {
 	return s.authStore
+}
+
+func (s *CoreService) UserSettingsStore() *UserSettingsStore {
+    return s.userSettingsStore
 }

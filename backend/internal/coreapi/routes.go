@@ -36,6 +36,7 @@ func (s *Server) initRoutes() {
 			r.Use(s.m.ValidateOauthToken)
 
 			r.Get("/me", s.userService.HandleGetMe)
+            r.Get("/settings", s.userSettingsService.HandleGetSettings)
 		})
 	})
 }

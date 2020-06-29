@@ -76,3 +76,16 @@ func (u *User) SetOauth2Identifier(provider string, identifier *string) {
 		u.GoogleLoginEmail = identifier
 	}
 }
+
+// UserSettings represents User's Settings
+type UserSettings struct {
+	ID       int       `json:"id"`
+	UserId   int       `json:"user_id"`
+	Settings *Settings `json:"settings"`
+}
+
+// Settings represents available settings option for user
+type Settings struct {
+	DefaultWorkspace *int `json:"default_workspace,omitempty"`
+	DefaultProject   *int `json:"default_project,omitempty"`
+}

@@ -19,6 +19,7 @@ type Server struct {
 	router      chi.Router
 	authService auth.AuthService
 	userService user.UserService
+    userSettingsService user.UserSettingsService
 	m           *ourMiddleware.Middleware
 	db          *hansip.Cluster
 }
@@ -59,6 +60,11 @@ func (s *Server) Init() error {
 		UserStore: cs.UserStore(),
 	}
 	s.authService.Init()
+
+    s.userSettingsService = user.UserSettingsService{
+        UserSettingsStore: cs.UserSettingsStore(),
+    }
+    s.userSettingsService.Init()
 
 	s.m = &ourMiddleware.Middleware{
 		OauthTokenSecretKey: oauthTokenSecretKey,
