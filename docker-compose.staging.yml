@@ -17,7 +17,7 @@ services:
       - cache-yarn:/app/cache/yarn
     environment:
       - YARN_CACHE_FOLDER=/app/cache/yarn
-      - AWANKU_API_URL=https://api.awanku.xyz
+      - AWANKU_API_URL=https://api.staging.awanku.xyz
   landing-webui:
     build:
       context: ./landing
@@ -29,6 +29,6 @@ services:
       - cache-yarn:/app/cache/yarn
     environment:
       - YARN_CACHE_FOLDER=/app/cache/yarn
-      - AWANKU_API_URL=https://api.awanku.xyz
+      - AWANKU_API_URL=https://api.staging.awanku.xyz
 volumes:
   cache-yarn:
