@@ -25,3 +25,10 @@ docker-test:
 	$(DOCKER_COMPOSE_TEST) up postgres-main -d
 	$(DOCKER_COMPOSE_TEST) run core-api sh /app/core-api/scripts/docker-test.sh
 	$(DOCKER_COMPOSE_TEST) stop
+
+swagger-generate:
+	rm -rf ./dist/swagger-core-api
+	go run github.com/swaggo/swag/cmd/swag init --dir ./cmd/core-api --output ./dist/swagger-core-api --parseDependency --parseInternal
+
+swagger-docker-build: swagger-generate
+	docker build -f docker/ApiDocs.dockerfile -t awanku/core-api-docs:latest .

@@ -17,6 +17,11 @@ func JSON(w http.ResponseWriter, status int, payload interface{}) {
 	}
 }
 
+type HTTPError struct {
+	Type   string            `json:"type"`
+	Errors map[string]string `json:"errors"`
+}
+
 func ValidationErrResp(w http.ResponseWriter, payload interface{}) {
 	// TODO: also handle internal error in validation
 	BadRequestErrResp(w, "validation_error", payload)
@@ -36,11 +41,13 @@ func UnauthorizedAccessResp(w http.ResponseWriter, errType string, payload inter
 	})
 }
 
+type InternalServerError struct {
+	Error string `json:"error"`
+}
+
 func InternalServerErrResp(w http.ResponseWriter, err error) {
 	log.Println("internal server err:", err)
-	JSON(w, http.StatusInternalServerError, map[string]string{
-		"error": "something's wrong on our side :(",
-	})
+	JSON(w, http.StatusInternalServerError, InternalServerError{Error: "something's wrong on our side :("})
 }
 
 func RedirectResp(w http.ResponseWriter, to string) {

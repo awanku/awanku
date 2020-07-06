@@ -16,6 +16,14 @@ func (s *UserService) Init() error {
 	return nil
 }
 
+// @Id api.v1.users.me
+// @Summary Get current user data
+// @Router /v1/users/me [get]
+// @Produce json
+// @Success 200 {object} core.User
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 500 {object} apihelper.InternalServerError
 func (s *UserService) HandleGetMe(w http.ResponseWriter, r *http.Request) {
 	userID := ctxhelper.AuthenticatedUserID(r.Context())
 	user, err := s.UserStore.GetByID(userID)

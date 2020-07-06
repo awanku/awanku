@@ -3,7 +3,6 @@ package coreapi
 import (
 	"net/http"
 
-	"github.com/awanku/awanku/internal/coreapi/utils/apihelper"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )
@@ -13,9 +12,7 @@ func (s *Server) initRoutes() {
 		w.Write([]byte("nothing's here, please go to https://awanku.id"))
 	})
 
-	s.router.Get("/status", func(w http.ResponseWriter, r *http.Request) {
-		apihelper.JSON(w, http.StatusOK, s.db.Health())
-	})
+	s.router.Get("/status", statusHandler(s.db))
 
 	s.router.Route("/v1", func(r chi.Router) {
 		r.Use(cors.New(cors.Options{

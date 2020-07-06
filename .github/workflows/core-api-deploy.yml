@@ -17,7 +17,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Build docker image and push
+      - name: Build API docker image and push
         uses: docker/build-push-action@v1
         with:
           path: ./backend
@@ -26,6 +26,17 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: docker.awanku.id
           repository: awanku/core-api
+          tags: latest
+
+      - name: Build API docs docker image and push
+        uses: docker/build-push-action@v1
+        with:
+          path: ./backend
+          dockerfile: ./backend/docker/ApiDocs.dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.awanku.id
+          repository: awanku/core-api-docs
           tags: latest
 
   deploy:

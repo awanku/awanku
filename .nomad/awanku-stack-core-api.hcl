@@ -92,5 +92,34 @@ job "awanku-stack-core-api" {
                 }
             }
         }
+        task "apidocs" {
+            driver = "docker"
+            config {
+                image = "awanku/core-api-docs"
+                port_map {
+                    http = 80
+                }
+            }
+            service {
+                name = "apidocs"
+                port = "http"
+                check {
+                    type     = "http"
+                    port     = "http"
+                    path     = "/docs/"
+                    interval = "10s"
+                    timeout  = "1s"
+                    check_restart {
+                        limit = 3
+                        grace = "30s"
+                    }
+                }
+            }
+            resources {
+                network {
+                    port "http" {}
+                }
+            }
+        }
     }
 }

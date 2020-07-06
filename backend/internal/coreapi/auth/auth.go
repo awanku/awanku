@@ -82,6 +82,17 @@ func (p getProviderConnectParam) validateUserID() validation.RuleFunc {
 	}
 }
 
+// @Id api.v1.auth.provider.connect
+// @Summary Auth provider connect
+// @Tags auth
+// @Param provider path string true "Auth provider" Enums(github, google)
+// @Router /v1/auth/{provider}/connect [get]
+// @Produce json
+// @Success 301 {string} string
+// @Header 301 {string} location "provider login url"
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 500 {object} apihelper.InternalServerError
 func (a *AuthService) HandleGetProviderConnect(w http.ResponseWriter, r *http.Request) {
 	param := &getProviderConnectParam{
 		Provider:   chi.URLParam(r, "provider"),
@@ -122,6 +133,17 @@ func (p getProviderCallbackParam) Validate() error {
 	)
 }
 
+// @Id api.v1.auth.provider.callback
+// @Summary Auth provider callback
+// @Tags auth
+// @Param provider path string true "Auth provider" Enums(github, google)
+// @Router /v1/auth/{provider}/callback [get]
+// @Produce json
+// @Success 301 {string} string
+// @Header 301 {string} location "return to url"
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 500 {object} apihelper.InternalServerError
 func (a *AuthService) HandleGetProviderCallback(w http.ResponseWriter, r *http.Request) {
 	param := &getProviderCallbackParam{
 		Provider: chi.URLParam(r, "provider"),
@@ -284,6 +306,17 @@ func (p *postTokenParam) validateRefreshToken() validation.RuleFunc {
 	}
 }
 
+// @Id api.v1.auth.exchangeToken
+// @Summary Exchange authorization code for authentication token
+// @Tags auth
+// @Accept json
+// @Param param body postTokenParam true "Request body"
+// @Router /v1/auth/token [post]
+// @Produce json
+// @Success 200 {object} oauth2.Token
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 500 {object} apihelper.InternalServerError
 func (a *AuthService) HandlePostToken(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		apihelper.BadRequestErrResp(w, "invalid_request", map[string]string{
