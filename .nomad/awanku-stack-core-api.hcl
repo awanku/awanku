@@ -1,15 +1,20 @@
 job "awanku-stack-core-api" {
     datacenters = ["dc1"]
     group "core-api" {
+        ephemeral_disk {
+            migrate = true
+            sticky  = true
+            size    = "500"
+        }
         task "core-api" {
             driver = "docker"
             config {
                 image = "docker.awanku.id/awanku/core-api:latest"
+                force_pull = true
                 auth {
                     username = "awanku"
                     password = "rahasia"
                 }
-                force_pull = true
                 port_map {
                     http = 3000
                 }
@@ -37,10 +42,15 @@ job "awanku-stack-core-api" {
                     "traefik.http.routers.awanku-stack-core-api-https.entrypoints=https",
                     "traefik.http.routers.awanku-stack-core-api-https.tls=true",
                     "traefik.http.routers.awanku-stack-core-api-https.tls.options=default",
+
+                    "traefik.http.routers.awanku-stack-core-api-staging.rule=Host(`api.staging.awanku.xyz`)",
+                    "traefik.http.routers.awanku-stack-core-api-staging.entrypoints=internal",
+                    "traefik.http.routers.awanku-stack-core-api-staging.tls=true",
+                    "traefik.http.routers.awanku-stack-core-api-staging.tls.options=default",
                 ]
             }
             env {
-                DB_URL = "postgres://awanku:rahasia@${NOMAD_IP_postgresql_pg}:${NOMAD_PORT_postgresql_pg}/awanku?sslmode=disable"
+                DB_URL = "postgres://awanku:rahasia@${NOMAD_IP_maindb_pg}:${NOMAD_PORT_maindb_pg}/awanku?sslmode=disable"
             }
             resources {
                 network {
@@ -48,19 +58,16 @@ job "awanku-stack-core-api" {
                 }
             }
         }
-        task "postgresql" {
+        task "maindb" {
             driver = "docker"
             config {
                 image = "postgres:12"
                 port_map {
                     pg = 5432
                 }
-                volumes = [
-                    "/awanku/maindb/pgdata:/var/lib/postgresql/data"
-                ]
             }
             service {
-                name = "awanku-db-main"
+                name = "awanku-maindb"
                 port = "pg"
                 check {
                     type     = "tcp"
@@ -77,6 +84,7 @@ job "awanku-stack-core-api" {
                 POSTGRES_USER = "awanku"
                 POSTGRES_PASSWORD = "rahasia"
                 POSTGRES_DB = "awanku"
+                PGDATA = "/alloc/data/postgres/pgdata"
             }
             resources {
                 network {

@@ -1,4 +1,5 @@
 BASE_PKG := github.com/awanku/awanku
+DOCKER_COMPOSE_TEST := docker-compose -f docker-compose.test.yml
 
 build:
 	go build -o ./dist/core-api $(BASE_PKG)/cmd/core-api
@@ -18,3 +19,9 @@ docker-build: build
 docker-push:
 	docker tag awanku/core-api:latest docker.awanku.id/awanku/core-api:latest
 	docker push docker.awanku.id/awanku/core-api:latest
+
+docker-test:
+	$(DOCKER_COMPOSE_TEST) build core-api
+	$(DOCKER_COMPOSE_TEST) up postgres-main -d
+	$(DOCKER_COMPOSE_TEST) run core-api sh /app/core-api/scripts/docker-test.sh
+	$(DOCKER_COMPOSE_TEST) stop

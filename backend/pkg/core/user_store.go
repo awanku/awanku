@@ -60,11 +60,13 @@ func (s *UserStore) Save(user *User) error {
         where id = ?
         returning updated_at
     `
-	var updatedAt time.Time
-	err := s.DB.WriterQuery(&updatedAt, query, user.Name, user.Email, user.GoogleLoginEmail, user.GithubLoginUsername, user.ID)
+	var returned struct {
+		UpdatedAt time.Time
+	}
+	err := s.DB.WriterQuery(&returned, query, user.Name, user.Email, user.GoogleLoginEmail, user.GithubLoginUsername, user.ID)
 	if err != nil {
 		return err
 	}
-	user.UpdatedAt = &updatedAt
+	user.UpdatedAt = &returned.UpdatedAt
 	return nil
 }
