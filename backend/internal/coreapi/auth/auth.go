@@ -46,9 +46,10 @@ func (a *AuthService) Init() error {
 }
 
 type getProviderConnectParam struct {
-	Provider   string `json:"provider"`
-	RedirectTo string `json:"redirect_to"`
-	State      string `json:"state"`
+	Provider string `json:"provider" validate:"required" swaggerignore:"true"`
+
+	RedirectTo string `json:"redirect_to" validate:"required"`
+	State      string `json:"state" validate:"required"`
 	UserID     string `json:"user_id"`
 
 	userStore contract.UserStore
@@ -123,8 +124,9 @@ func (a *AuthService) HandleGetProviderConnect(w http.ResponseWriter, r *http.Re
 }
 
 type getProviderCallbackParam struct {
-	Provider string `json:"provider"`
-	Code     string `json:"code"`
+	Provider string `json:"provider" swaggerignore:"true"`
+
+	Code string `json:"code"`
 }
 
 func (p getProviderCallbackParam) Validate() error {
@@ -138,6 +140,7 @@ func (p getProviderCallbackParam) Validate() error {
 // @Summary Auth provider callback
 // @Tags Auth
 // @Param provider path string true "Auth provider" Enums(github, google)
+// @Param queryParam query getProviderCallbackParam true "Query param"
 // @Router /v1/auth/{provider}/callback [get]
 // @Produce json
 // @Success 301 {string} string
