@@ -16,8 +16,10 @@ func (s *UserService) Init() error {
 	return nil
 }
 
-// @Id api.v1.users.me
+// @Id api.v1.users.getMe
 // @Summary Get current user data
+// @Tags Users
+// @Security ApiKeyAuth
 // @Router /v1/users/me [get]
 // @Produce json
 // @Success 200 {object} core.User

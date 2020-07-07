@@ -84,7 +84,7 @@ func (p getProviderConnectParam) validateUserID() validation.RuleFunc {
 
 // @Id api.v1.auth.provider.connect
 // @Summary Auth provider connect
-// @Tags auth
+// @Tags Auth
 // @Param provider path string true "Auth provider" Enums(github, google)
 // @Router /v1/auth/{provider}/connect [get]
 // @Produce json
@@ -135,7 +135,7 @@ func (p getProviderCallbackParam) Validate() error {
 
 // @Id api.v1.auth.provider.callback
 // @Summary Auth provider callback
-// @Tags auth
+// @Tags Auth
 // @Param provider path string true "Auth provider" Enums(github, google)
 // @Router /v1/auth/{provider}/callback [get]
 // @Produce json
@@ -308,7 +308,7 @@ func (p *postTokenParam) validateRefreshToken() validation.RuleFunc {
 
 // @Id api.v1.auth.exchangeToken
 // @Summary Exchange authorization code for authentication token
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Param param body postTokenParam true "Request body"
 // @Router /v1/auth/token [post]

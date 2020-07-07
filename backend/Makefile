@@ -30,9 +30,9 @@ swagger-generate:
 	rm -rf ./dist/swagger-core-api
 	go run github.com/swaggo/swag/cmd/swag init --dir ./cmd/core-api --output ./dist/swagger-core-api --parseDependency --parseInternal
 
-swagger-docker-build: swagger-generate
+swagger-docker-build:
 	docker build -f docker/ApiDocs.dockerfile -t awanku/core-api-docs:latest .
 
-swagger-docker-push: swagger-generate
+swagger-docker-push:
 	docker tag awanku/core-api-docs:latest docker.awanku.id/awanku/core-api-docs:latest
 	docker push docker.awanku.id/awanku/core-api-docs:latest

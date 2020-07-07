@@ -9,7 +9,7 @@ import (
 
 func (s *Server) initRoutes() {
 	s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("nothing's here, please go to https://awanku.id"))
+		w.Write([]byte("See https://api.awanku.id/docs/ for API documentation"))
 	})
 
 	s.router.Get("/status", statusHandler(s.db))
