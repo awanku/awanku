@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-18.04
     if: github.event.deployment.payload.app == 'core-api'
     steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14.x
+
       - name: Check out code
         uses: actions/checkout@v2
         with:
@@ -27,6 +32,12 @@ jobs:
           registry: docker.awanku.id
           repository: awanku/core-api
           tags: latest
+
+      - name: Build API docs
+        working-directory: ./backend
+        run: |
+          go get -v -t -d ./...
+          make swagger-generate
 
       - name: Build API docs docker image and push
         uses: docker/build-push-action@v1

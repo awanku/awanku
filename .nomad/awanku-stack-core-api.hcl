@@ -42,11 +42,6 @@ job "awanku-stack-core-api" {
                     "traefik.http.routers.awanku-stack-core-api-https.entrypoints=https",
                     "traefik.http.routers.awanku-stack-core-api-https.tls=true",
                     "traefik.http.routers.awanku-stack-core-api-https.tls.options=default",
-
-                    "traefik.http.routers.awanku-stack-core-api-staging.rule=Host(`api.staging.awanku.xyz`)",
-                    "traefik.http.routers.awanku-stack-core-api-staging.entrypoints=internal",
-                    "traefik.http.routers.awanku-stack-core-api-staging.tls=true",
-                    "traefik.http.routers.awanku-stack-core-api-staging.tls.options=default",
                 ]
             }
             env {
@@ -114,6 +109,16 @@ job "awanku-stack-core-api" {
                         grace = "30s"
                     }
                 }
+                tags = [
+                    "traefik.enable=true",
+                    "traefik.http.routers.awanku-stack-core-api-docs-http.rule=\"Host(`api.awanku.id`) && Path(`/docs/`) \"",
+                    "traefik.http.routers.awanku-stack-core-api-docs-http.entrypoints=http",
+                    "traefik.http.routers.awanku-stack-core-api-docs-http.middlewares=httpToHttps@consul",
+                    "traefik.http.routers.awanku-stack-core-api-docs-https.rule=\"Host(`api.awanku.id`) && Path(`/docs/`) \"",
+                    "traefik.http.routers.awanku-stack-core-api-docs-https.entrypoints=https",
+                    "traefik.http.routers.awanku-stack-core-api-docs-https.tls=true",
+                    "traefik.http.routers.awanku-stack-core-api-docs-https.tls.options=default",
+                ]
             }
             resources {
                 network {
