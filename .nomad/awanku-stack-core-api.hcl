@@ -30,7 +30,7 @@ job "awanku-stack-core-api" {
                     timeout = "1s"
                     check_restart {
                         limit = 3
-                        grace = "60s"
+                        grace = "30s"
                     }
                 }
                 tags = [

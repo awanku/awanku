@@ -15,11 +15,11 @@ func oauth2Config(environment, provider string) *oauth2.Config {
 	data := map[string]map[string]*oauth2.Config{
 		"development": {
 			core.OauthProviderGithub: &oauth2.Config{
-				ClientID:     "0c30bd255139cd20d33d",
-				ClientSecret: "24c537a65760293ef284d84a3b1938dd16097825",
+				ClientID:     "857f091db02afc686f98",
+				ClientSecret: "7641cdcea107b66a962ac73988b5d77bd2efe13c",
 				Scopes:       []string{"read:user", "user:email"},
 				Endpoint:     oauth2github.Endpoint,
-				RedirectURL:  "http://api.awanku.xyz/v1/auth/github/callback",
+				RedirectURL:  "https://api.awanku.id/v1/auth/github/callback",
 			},
 			core.OauthProviderGoogle: &oauth2.Config{
 				ClientID:     "757848106543-b069r475lcql7373vmhk3179u5l1anek.apps.googleusercontent.com",
@@ -29,7 +29,7 @@ func oauth2Config(environment, provider string) *oauth2.Config {
 					"https://www.googleapis.com/auth/userinfo.profile",
 				},
 				Endpoint:    oauth2google.Endpoint,
-				RedirectURL: "http://api.awanku.xyz/v1/auth/google/callback",
+				RedirectURL: "https://api.awanku.id/v1/auth/google/callback",
 			},
 		},
 	}
