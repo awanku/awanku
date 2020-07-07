@@ -32,3 +32,7 @@ swagger-generate:
 
 swagger-docker-build: swagger-generate
 	docker build -f docker/ApiDocs.dockerfile -t awanku/core-api-docs:latest .
+
+swagger-docker-push: swagger-generate
+	docker tag awanku/core-api-docs:latest docker.awanku.id/awanku/core-api-docs:latest
+	docker push docker.awanku.id/awanku/core-api-docs:latest

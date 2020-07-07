@@ -90,13 +90,18 @@ job "awanku-stack-core-api" {
         task "apidocs" {
             driver = "docker"
             config {
-                image = "awanku/core-api-docs"
+                image = "docker.awanku.id/awanku/core-api-docs:latest"
+                force_pull = true
+                auth {
+                    username = "awanku"
+                    password = "rahasia"
+                }
                 port_map {
                     http = 80
                 }
             }
             service {
-                name = "apidocs"
+                name = "awanku-core-api-docs"
                 port = "http"
                 check {
                     type     = "http"
@@ -111,10 +116,7 @@ job "awanku-stack-core-api" {
                 }
                 tags = [
                     "traefik.enable=true",
-                    "traefik.http.routers.awanku-stack-core-api-docs-http.rule=\"Host(`api.awanku.id`) && Path(`/docs/`) \"",
-                    "traefik.http.routers.awanku-stack-core-api-docs-http.entrypoints=http",
-                    "traefik.http.routers.awanku-stack-core-api-docs-http.middlewares=httpToHttps@consul",
-                    "traefik.http.routers.awanku-stack-core-api-docs-https.rule=\"Host(`api.awanku.id`) && Path(`/docs/`) \"",
+                    "traefik.http.routers.awanku-stack-core-api-docs-https.rule=Host(`api.awanku.id`) && PathPrefix(`/docs/`)",
                     "traefik.http.routers.awanku-stack-core-api-docs-https.entrypoints=https",
                     "traefik.http.routers.awanku-stack-core-api-docs-https.tls=true",
                     "traefik.http.routers.awanku-stack-core-api-docs-https.tls.options=default",
