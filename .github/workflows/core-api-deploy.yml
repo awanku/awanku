@@ -31,7 +31,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: docker.awanku.id
           repository: awanku/core-api
-          tags: latest
+          tags: ${{ github.sha }}
 
       - name: Build API docs
         working-directory: ./backend
@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: docker.awanku.id
           repository: awanku/core-api-docs
-          tags: latest
+          tags: ${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-18.04
@@ -98,9 +98,12 @@ jobs:
           token: '${{ github.token }}'
 
       - name: Submit Nomad job
-        run: /usr/bin/nomad run .nomad/awanku-stack-core-api.hcl
         env:
-          NOMAD_ADDR: http://nomad.service.consul:4646
+          NOMAD_ADDR: https://nomad.internal.awanku.id
+        run: |
+          sed -i 's/core-api:latest/core-api:${{ github.sha }}' .nomad/awanku-stack-core-api.hcl
+          sed -i 's/core-api-docs:latest/core-api-docs:${{ github.sha }}' .nomad/awanku-stack-core-api.hcl
+          /usr/bin/nomad run .nomad/awanku-stack-core-api.hcl
 
       - name: 'Deployment success'
         if: success()
