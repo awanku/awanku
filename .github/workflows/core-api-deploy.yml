@@ -101,8 +101,8 @@ jobs:
         env:
           NOMAD_ADDR: https://nomad.internal.awanku.id
         run: |
-          sed -i 's/core-api:latest/core-api:${{ github.sha }}' .nomad/awanku-stack-core-api.hcl
-          sed -i 's/core-api-docs:latest/core-api-docs:${{ github.sha }}' .nomad/awanku-stack-core-api.hcl
+          sed -i 's/core-api:latest/core-api:${{ github.sha }}/' .nomad/awanku-stack-core-api.hcl
+          sed -i 's/core-api-docs:latest/core-api-docs:${{ github.sha }}/' .nomad/awanku-stack-core-api.hcl
           /usr/bin/nomad run .nomad/awanku-stack-core-api.hcl
 
       - name: 'Deployment success'
