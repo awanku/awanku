@@ -86,6 +86,7 @@ func (p getProviderConnectParam) validateUserID() validation.RuleFunc {
 // @Summary Auth provider connect
 // @Tags Auth
 // @Param provider path string true "Auth provider" Enums(github, google)
+// @Param queryParam query getProviderConnectParam true "Query param"
 // @Router /v1/auth/{provider}/connect [get]
 // @Produce json
 // @Success 301 {string} string
