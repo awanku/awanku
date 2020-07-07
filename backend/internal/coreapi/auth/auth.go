@@ -126,7 +126,7 @@ func (a *AuthService) HandleGetProviderConnect(w http.ResponseWriter, r *http.Re
 type getProviderCallbackParam struct {
 	Provider string `json:"provider" swaggerignore:"true"`
 
-	Code string `json:"code"`
+	Code string `json:"code" validate:"required"`
 }
 
 func (p getProviderCallbackParam) Validate() error {
@@ -228,7 +228,7 @@ func (a *AuthService) HandleGetProviderCallback(w http.ResponseWriter, r *http.R
 }
 
 type postTokenParam struct {
-	GrantType    string `json:"grant_type" schema:"grant_type"`
+	GrantType    string `json:"grant_type" schema:"grant_type" validate:"required"`
 	Code         string `json:"code" schema:"code"`
 	RefreshToken string `json:"refresh_token" schema:"refresh_token"`
 
