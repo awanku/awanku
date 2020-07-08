@@ -424,7 +424,7 @@ export class API {
     let form: any = {};
     return new Promise((resolve, reject) => {
       headers["accept"] = "application/json";
-      headers["content-type"] = "application/json";
+      headers["Content-Type"] = "application/json";
 
       if (parameters["param"] !== undefined) {
         body = parameters["param"];
