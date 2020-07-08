@@ -2,7 +2,6 @@ package coreapi
 
 import (
 	"net/http"
-	"os"
 	"time"
 
 	hansip "github.com/asasmoyo/pq-hansip"
@@ -21,15 +20,17 @@ type Server struct {
 	userService user.UserService
 	m           *ourMiddleware.Middleware
 	db          *hansip.Cluster
+
+	Config *Config
 }
 
 func (s *Server) Init() error {
 	s.router = chi.NewRouter()
 	s.router.Use(middleware.Logger)
 
-	var oauthTokenSecretKey = []byte("supersecretkey")
+	var oauthTokenSecretKey = []byte(s.Config.OAuthSecretKey)
 
-	opt, err := pg.ParseURL(os.Getenv("DB_URL"))
+	opt, err := pg.ParseURL(s.Config.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}
@@ -49,6 +50,7 @@ func (s *Server) Init() error {
 	}
 
 	s.authService = auth.AuthService{
+		Environment:         s.Config.Environment,
 		OauthTokenSecretKey: oauthTokenSecretKey,
 		UserStore:           cs.UserStore(),
 		AuthStore:           cs.AuthStore(),

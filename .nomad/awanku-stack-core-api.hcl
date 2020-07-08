@@ -45,7 +45,9 @@ job "awanku-stack-core-api" {
                 ]
             }
             env {
-                DB_URL = "postgres://awanku:rahasia@${NOMAD_IP_maindb_pg}:${NOMAD_PORT_maindb_pg}/awanku?sslmode=disable"
+                ENVIRONMENT = "production"
+                DATABASE_URL = "postgres://awanku:rahasia@${NOMAD_IP_maindb_pg}:${NOMAD_PORT_maindb_pg}/awanku?sslmode=disable"
+                OAUTH_SECRET_KEY = "supersecretkey"
             }
             resources {
                 network {

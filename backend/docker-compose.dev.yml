@@ -1,0 +1,25 @@
+version: '3'
+services:
+  core-api:
+    build:
+      context: .
+      dockerfile: ./docker/Development.dockerfile
+    working_dir: /app/core-api
+    command: make run-dev
+    ports:
+      - 80:3000
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://awanku:rahasia@maindb/awanku?sslmode=disable
+      OAUTH_SECRET_KEY: randomstringhere
+    volumes:
+      - .:/app/core-api
+      - gopath:/go
+  maindb:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: awanku
+      POSTGRES_USER: awanku
+      POSTGRES_PASSWORD: rahasia
+volumes:
+  gopath: {}

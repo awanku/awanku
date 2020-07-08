@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/url"
@@ -15,13 +16,13 @@ import (
 	"github.com/go-chi/chi"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/gorilla/schema"
 )
 
 const authorizationCodeLength = 15
 const oauthTokensLength = 20
 
 type AuthService struct {
+	Environment         string
 	UserStore           contract.UserStore
 	AuthStore           contract.AuthStore
 	OauthTokenSecretKey []byte
@@ -35,10 +36,10 @@ type AuthService struct {
 func (a *AuthService) Init() error {
 	a.providers = map[string]contract.AuthProvider{
 		core.OauthProviderGithub: &oauth2provider.GithubProvider{
-			Config: oauth2Config("development", core.OauthProviderGithub),
+			Config: oauth2Config(a.Environment, core.OauthProviderGithub),
 		},
 		core.OauthProviderGoogle: &oauth2provider.GoogleProvider{
-			Config: oauth2Config("development", core.OauthProviderGoogle),
+			Config: oauth2Config(a.Environment, core.OauthProviderGoogle),
 		},
 	}
 	a.cookieManager = newCookieManager("12345678901234561234567890123456", "1234567890123456")
@@ -333,7 +334,7 @@ func (a *AuthService) HandlePostToken(w http.ResponseWriter, r *http.Request) {
 		authStore:           a.AuthStore,
 		oauthTokenSecretKey: a.OauthTokenSecretKey,
 	}
-	err := schema.NewDecoder().Decode(&param, r.PostForm)
+	err := json.NewDecoder(r.Body).Decode(&param)
 	if err != nil {
 		apihelper.BadRequestErrResp(w, "invalid_request", map[string]string{
 			"request_body": "malformed format",

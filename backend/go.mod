@@ -6,11 +6,10 @@ replace github.com/asasmoyo/pq-hansip => ./lib/pq-hansip
 
 require (
 	cloud.google.com/go v0.60.0 // indirect
-	cloud.google.com/go/bigquery v1.8.0 // indirect
-	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
 	github.com/asasmoyo/pq-hansip v0.0.0-20190502052219-d515e288ee85
 	github.com/bxcodec/faker/v3 v3.5.0
+	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/cors v1.1.1
 	github.com/go-openapi/spec v0.19.8 // indirect

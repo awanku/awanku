@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/awanku/awanku/internal/coreapi"
 )
@@ -23,9 +23,16 @@ import (
 // @authorizationUrl https://api.awanku.id/v1/auth/{provider}/connect
 
 func main() {
-	fmt.Println("Starting server...")
+	log.Println("Starting server...")
 
-	srv := coreapi.Server{}
+	conf := &coreapi.Config{}
+	if err := conf.Load(); err != nil {
+		log.Panicln("failed to parse config from environment variable:", err)
+	}
+
+	srv := coreapi.Server{
+		Config: conf,
+	}
 	srv.Init()
 	srv.Start()
 }
