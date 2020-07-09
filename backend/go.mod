@@ -18,7 +18,6 @@ require (
 	github.com/go-pg/pg/v10 v10.0.0-beta.5
 	github.com/golang-migrate/migrate/v4 v4.11.0
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/gorilla/schema v1.1.0
 	github.com/gorilla/securecookie v1.1.1
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/stretchr/testify v1.6.1
