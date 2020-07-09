@@ -19,11 +19,11 @@ func (s *UserStore) GetOrCreateByEmail(user *User) error {
         returning id, created_at, updated_at
     `
 
-	returned := struct {
+	var returned struct {
 		ID        int64
 		CreatedAt time.Time
 		UpdatedAt *time.Time
-	}{}
+	}
 	err := s.DB.WriterQuery(&returned, query, user.Name, user.Email, user.GoogleLoginEmail, user.GithubLoginUsername)
 	if err != nil {
 		return err

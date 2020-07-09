@@ -46,13 +46,15 @@ func (s *AuthStore) CreateOauthToken(token *OauthToken) error {
         returning id
     `
 
-	var id int64
-	err := s.DB.WriterQuery(&id, query, token.UserID, token.AccessTokenHash, token.RefreshTokenHash, token.ExpiresAt, token.RequesterIP, token.RequesterUserAgent)
+	var returned struct {
+		ID int64
+	}
+	err := s.DB.WriterQuery(&returned, query, token.UserID, token.AccessTokenHash, token.RefreshTokenHash, token.ExpiresAt, token.RequesterIP, token.RequesterUserAgent)
 	if err != nil {
 		return err
 	}
 
-	token.ID = id
+	token.ID = returned.ID
 	return nil
 }
 
