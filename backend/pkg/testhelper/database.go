@@ -23,9 +23,9 @@ func DBCluster() (*hansip.Cluster, func()) {
 		panic("failed to get db cluster")
 	}
 
-	opts, err := pg.ParseURL(os.Getenv("DB_URL"))
+	opts, err := pg.ParseURL(os.Getenv("DATABASE_URL"))
 	if err != nil {
-		panic("invalid DB_URL")
+		panic("invalid DATABASE_URL")
 	}
 	db := pg.Connect(opts)
 	cluster := hansip.NewCluster(&hansip.Config{
