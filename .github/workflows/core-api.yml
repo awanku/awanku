@@ -23,7 +23,8 @@ jobs:
           POSTGRES_PASSWORD: rahasia
           POSTGRES_DB: awanku
     env:
-      DB_URL: postgres://awanku:rahasia@localhost:5432/awanku?sslmode=disable
+      ENVIRONMENT: test
+      DATABASE_URL: postgres://awanku:rahasia@localhost:5432/awanku?sslmode=disable
     steps:
     - name: Setup Go
       uses: actions/setup-go@v2
