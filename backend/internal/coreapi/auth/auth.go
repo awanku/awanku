@@ -265,7 +265,7 @@ func (p *postTokenParam) validateCode() validation.RuleFunc {
 			return validation.NewInternalError(err)
 		}
 
-		if p.retrievedCode.Code != "" {
+		if p.retrievedCode != nil && p.retrievedCode.Code != "" {
 			return nil
 		}
 		return errors.New("invalid")
@@ -351,7 +351,13 @@ func (a *AuthService) HandlePostToken(w http.ResponseWriter, r *http.Request) {
 		apihelper.InternalServerErrResp(w, err)
 		return
 	}
-	token.RequesterIP = r.Header.Get("X-Forwarded-For")
+	token.RequesterIP = r.Header.Get("X-Real-Ip")
+	if token.RequesterIP == "" {
+		parts := strings.Split(r.Header.Get("X-Forwarded-For"), " ")
+		if len(parts) > 0 {
+			token.RequesterIP = parts[len(parts)-1]
+		}
+	}
 	token.RequesterUserAgent = r.Header.Get("User-Agent")
 
 	switch param.GrantType {
