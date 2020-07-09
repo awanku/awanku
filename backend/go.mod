@@ -27,7 +27,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/tools v0.0.0-20200702044944-0cc1aa72b347 // indirect
-	google.golang.org/api v0.28.0
+	google.golang.org/api v0.29.0
 	google.golang.org/genproto v0.0.0-20200702021140-07506425bd67 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
