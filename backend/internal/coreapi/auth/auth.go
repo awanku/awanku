@@ -351,6 +351,7 @@ func (a *AuthService) HandlePostToken(w http.ResponseWriter, r *http.Request) {
 		apihelper.InternalServerErrResp(w, err)
 		return
 	}
+
 	token.RequesterIP = r.Header.Get("X-Real-Ip")
 	if token.RequesterIP == "" {
 		parts := strings.Split(r.Header.Get("X-Forwarded-For"), " ")
@@ -358,6 +359,10 @@ func (a *AuthService) HandlePostToken(w http.ResponseWriter, r *http.Request) {
 			token.RequesterIP = parts[len(parts)-1]
 		}
 	}
+	if token.RequesterIP == "" {
+		token.RequesterIP = "127.0.0.1"
+	}
+
 	token.RequesterUserAgent = r.Header.Get("User-Agent")
 
 	switch param.GrantType {
