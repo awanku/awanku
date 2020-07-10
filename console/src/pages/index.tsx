@@ -30,7 +30,7 @@ const IndexPage = () => {
           Continue with Google
         </Button>
         <Box h={4} />
-        <Button onClick={() => connectUrl("google")} isFullWidth>
+        <Button onClick={() => connectUrl("github")} isFullWidth>
           Continue with Github
         </Button>
       </Box>
