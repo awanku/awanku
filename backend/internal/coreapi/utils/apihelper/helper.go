@@ -8,9 +8,7 @@ import (
 )
 
 func JSON(w http.ResponseWriter, status int, payload interface{}) {
-	w.WriteHeader(status)
-	w.Header().Add("content-type", "application/json")
-
+	w.Header().Set("content-type", "application/json")
 	err := json.NewEncoder(w).Encode(payload)
 	if err != nil {
 		panic(fmt.Errorf("failed to marshal json: %v", err))
