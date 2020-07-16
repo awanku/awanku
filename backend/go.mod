@@ -15,7 +15,7 @@ require (
 	github.com/go-openapi/spec v0.19.8 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/go-ozzo/ozzo-validation/v4 v4.2.1
-	github.com/go-pg/pg/v10 v10.0.0-beta.5
+	github.com/go-pg/pg/v10 v10.0.0-beta.6
 	github.com/golang-migrate/migrate/v4 v4.11.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/gorilla/securecookie v1.1.1
