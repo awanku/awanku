@@ -18,7 +18,7 @@ update-deps:
 	go get -u $$(go list ./... | grep -v dist)
 	go mod tidy
 
-docker-build: build
+docker-build:
 	docker build -f docker/Production.dockerfile -t awanku/core-api:latest .
 
 docker-push:

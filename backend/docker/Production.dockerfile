@@ -1,7 +1,9 @@
 FROM golang:1.14.4-alpine
 RUN apk add --no-cache make ca-certificates
-COPY . /app/awanku
 WORKDIR /app/awanku
+COPY go.mod go.sum /app/awanku/
+RUN go mod download
+COPY . /app/awanku/
 RUN make build
 
 FROM alpine:3

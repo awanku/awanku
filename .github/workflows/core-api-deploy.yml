@@ -22,33 +22,25 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Build API docker image and push
-        uses: docker/build-push-action@v1
-        with:
-          path: ./backend
-          dockerfile: ./backend/docker/Production.dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: docker.awanku.id
-          repository: awanku/core-api
-          tags: ${{ github.sha }}
+      - name: Login to Docker registry
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin docker.awanku.id
 
-      - name: Build API docs
+      - name: Build API Docker image and push
+        working-directory: ./backend
+        env:
+          DOCKER_IMAGE_TAG: ${{ github.sha }}
+        run: |
+          ./scripts/ci-docker-build.sh
+          ./scripts/ci-docker-push.sh
+
+      - name: Build API Docs Docker image and push
         working-directory: ./backend
         run: |
           go get -v -t -d ./...
           make swagger-generate
-
-      - name: Build API docs docker image and push
-        uses: docker/build-push-action@v1
-        with:
-          path: ./backend
-          dockerfile: ./backend/docker/ApiDocs.dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: docker.awanku.id
-          repository: awanku/core-api-docs
-          tags: ${{ github.sha }}
+          make swagger-docker-build
+          make swagger-docker-push
 
   deploy:
     runs-on: ubuntu-18.04
@@ -62,12 +54,14 @@ jobs:
       - name: Install packages
         run: sudo apt-get install -y --no-install-recommends openvpn unzip curl openvpn-systemd-resolved
 
+      - name: Login to Docker registry
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin docker.awanku.id
+
       - name: Connect VPN
         run: |
-          echo "${SECRET}" > secret.txt
+          echo "${{ secrets.OPENVPN_SECRET }}" > secret.txt
           sudo openvpn --verb 6 --config .github/vpn.ovpn --askpass secret.txt --daemon --log openvpn.log
-        env:
-          SECRET: ${{ secrets.OPENVPN_SECRET }}
 
       - name: Wait until VPN is up
         run: |
@@ -101,9 +95,10 @@ jobs:
         env:
           NOMAD_ADDR: https://nomad.internal.awanku.id
         run: |
-          sed -i 's/core-api:latest/core-api:${{ github.sha }}/' .nomad/awanku-stack-core-api.hcl
-          sed -i 's/core-api-docs:latest/core-api-docs:${{ github.sha }}/' .nomad/awanku-stack-core-api.hcl
-          /usr/bin/nomad run .nomad/awanku-stack-core-api.hcl
+          sed -i 's/current_version/${{ github.sha }}/' ./backend/nomad/core-api.hcl
+          sed -i 's/current_version/${{ github.sha }}/' ./backend/nomad/api-docs.hcl
+          /usr/bin/nomad run ./backend/nomad/core-api.hcl
+          /usr/bin/nomad run ./backend/nomad/api-docs.hcl
 
       - name: 'Deployment success'
         if: success()

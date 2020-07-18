@@ -34,7 +34,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
       with:
-          ref: ${{ github.ref }}
+        ref: ${{ github.ref }}
 
     - name: Run test suite
       working-directory: ./backend
@@ -51,20 +51,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Build API binary
+      - name: Build Docker image
         working-directory: ./backend
         run: |
-          go get -v -t -d ./...
-          make build
-
-      - name: Build API docker image
-        uses: docker/build-push-action@v1
-        with:
-          path: ./backend
-          dockerfile: ./backend/docker/Production.dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: docker.awanku.id
-          repository: awanku/core-api
-          tags: latest
-          push: false
+          ./scripts/ci-docker-build.sh
