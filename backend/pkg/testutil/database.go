@@ -1,4 +1,4 @@
-package testhelper
+package testutil
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 	"time"
 
 	hansip "github.com/asasmoyo/pq-hansip"
-	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v9"
 )
 
 var wg sync.WaitGroup
@@ -37,5 +37,7 @@ func DBCluster() (*hansip.Cluster, func()) {
 	done := func() {
 		wg.Done()
 	}
+
+	wg.Add(1)
 	return cluster, done
 }

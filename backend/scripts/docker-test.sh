@@ -7,7 +7,7 @@ create role "${name}" with login password 'rahasia';
 create database "${name}" owner '${name}';
 SQL
 
-export DB_URL="postgres://${name}:rahasia@${DB_HOST}/${name}?sslmode=disable"
+export DATABASE_URL="postgres://${name}:rahasia@${DB_HOST}/${name}?sslmode=disable"
 ./database/up.sh
 
-time go test -v -race -cover ./...
+go test -v -race -cover $(go list ./... | grep -v dist)

@@ -1,7 +1,7 @@
 package hansip
 
 import (
-	pg "github.com/go-pg/pg/v10"
+	pg "github.com/go-pg/pg/v9"
 )
 
 type gopgSQL struct {

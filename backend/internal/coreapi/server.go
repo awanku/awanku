@@ -5,21 +5,15 @@ import (
 	"time"
 
 	hansip "github.com/asasmoyo/pq-hansip"
-	"github.com/awanku/awanku/internal/coreapi/auth"
-	ourMiddleware "github.com/awanku/awanku/internal/coreapi/middleware"
-	"github.com/awanku/awanku/internal/coreapi/user"
-	"github.com/awanku/awanku/pkg/core"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v9"
 )
 
 type Server struct {
-	router      chi.Router
-	authService auth.AuthService
-	userService user.UserService
-	m           *ourMiddleware.Middleware
-	db          *hansip.Cluster
+	router              chi.Router
+	db                  *hansip.Cluster
+	oauthTokenSecretKey []byte
 
 	Config *Config
 }
@@ -28,44 +22,13 @@ func (s *Server) Init() error {
 	s.router = chi.NewRouter()
 	s.router.Use(middleware.Logger)
 
-	var oauthTokenSecretKey = []byte(s.Config.OAuthSecretKey)
+	s.oauthTokenSecretKey = []byte(s.Config.OAuthSecretKey)
 
-	opt, err := pg.ParseURL(s.Config.DatabaseURL)
+	db, err := initDB(s.Config.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}
-	s.db = hansip.NewCluster(&hansip.Config{
-		Primary:        hansip.WrapGoPG(pg.Connect(opt)),
-		Replicas:       []hansip.SQL{hansip.WrapGoPG(pg.Connect(opt))},
-		PingTimeout:    1 * time.Second,
-		ConnCheckDelay: 5 * time.Second,
-	})
-
-	cs, err := core.NewCoreService(&core.Config{
-		DB:                  s.db,
-		OauthTokenSecretKey: oauthTokenSecretKey,
-	})
-	if err != nil {
-		return err
-	}
-
-	s.authService = auth.AuthService{
-		Environment:         s.Config.Environment,
-		OauthTokenSecretKey: oauthTokenSecretKey,
-		UserStore:           cs.UserStore(),
-		AuthStore:           cs.AuthStore(),
-	}
-	s.authService.Init()
-
-	s.userService = user.UserService{
-		UserStore: cs.UserStore(),
-	}
-	s.authService.Init()
-
-	s.m = &ourMiddleware.Middleware{
-		OauthTokenSecretKey: oauthTokenSecretKey,
-		AuthStore:           cs.AuthStore(),
-	}
+	s.db = db
 
 	s.initRoutes()
 	return nil
@@ -73,4 +36,18 @@ func (s *Server) Init() error {
 
 func (s *Server) Start() error {
 	return http.ListenAndServe("0.0.0.0:3000", s.router)
+}
+
+func initDB(dbURL string) (*hansip.Cluster, error) {
+	opt, err := pg.ParseURL(dbURL)
+	if err != nil {
+		return nil, err
+	}
+	db := hansip.NewCluster(&hansip.Config{
+		Primary:        hansip.WrapGoPG(pg.Connect(opt)),
+		Replicas:       []hansip.SQL{hansip.WrapGoPG(pg.Connect(opt))},
+		PingTimeout:    1 * time.Second,
+		ConnCheckDelay: 5 * time.Second,
+	})
+	return db, nil
 }

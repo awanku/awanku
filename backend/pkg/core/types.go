@@ -10,8 +10,9 @@ import (
 
 // supported oauth providers
 const (
-	OauthProviderGithub = "github"
-	OauthProviderGoogle = "google"
+	OauthProviderGithub               = "github"
+	OauthProviderGoogle               = "google"
+	OauthAuthorizationCodeMaxDuration = 5 * time.Minute
 )
 
 // OauthUserData represents user data provided by third party oauth services

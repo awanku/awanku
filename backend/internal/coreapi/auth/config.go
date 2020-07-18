@@ -2,13 +2,15 @@ package auth
 
 import (
 	"github.com/awanku/awanku/pkg/core"
+	"github.com/awanku/awanku/pkg/oauth2provider"
 	"golang.org/x/oauth2"
 	oauth2github "golang.org/x/oauth2/github"
 	oauth2google "golang.org/x/oauth2/google"
 )
 
-type Config struct {
-	BaseURL string
+type oauthProvider interface {
+	LoginURL(state string) string
+	ExchangeCode(code string) (*core.OauthUserData, error)
 }
 
 func oauth2Config(environment, provider string) *oauth2.Config {
@@ -53,4 +55,18 @@ func oauth2Config(environment, provider string) *oauth2.Config {
 		},
 	}
 	return data[environment][provider]
+}
+
+func oauth2Provider(provider, environment string) oauthProvider {
+	switch provider {
+	case core.OauthProviderGoogle:
+		return &oauth2provider.GoogleProvider{
+			Config: oauth2Config(environment, core.OauthProviderGoogle),
+		}
+	case core.OauthProviderGithub:
+		return &oauth2provider.GithubProvider{
+			Config: oauth2Config(environment, core.OauthProviderGithub),
+		}
+	}
+	return nil
 }

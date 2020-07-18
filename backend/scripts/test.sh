@@ -6,4 +6,4 @@ fi
 ./database/nuke.sh
 ./database/up.sh
 
-go test -v -race -cover ./...
+go test -v -race -cover $(go list ./... | grep -v dist)

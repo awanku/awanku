@@ -14,6 +14,10 @@ run-dev:
 test:
 	./scripts/test.sh
 
+update-deps:
+	go get -u $$(go list ./... | grep -v dist)
+	go mod tidy
+
 docker-build: build
 	docker build -f docker/Production.dockerfile -t awanku/core-api:latest .
 
@@ -23,7 +27,7 @@ docker-push:
 
 docker-test:
 	$(DOCKER_COMPOSE_TEST) build core-api
-	$(DOCKER_COMPOSE_TEST) up postgres-main -d
+	$(DOCKER_COMPOSE_TEST) up -d postgres-main
 	$(DOCKER_COMPOSE_TEST) run core-api sh /app/core-api/scripts/docker-test.sh
 	$(DOCKER_COMPOSE_TEST) stop
 

@@ -3,6 +3,9 @@ package coreapi
 import (
 	"net/http"
 
+	"github.com/awanku/awanku/internal/coreapi/appctx"
+	"github.com/awanku/awanku/internal/coreapi/auth"
+	"github.com/awanku/awanku/internal/coreapi/user"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )
@@ -15,6 +18,11 @@ func (s *Server) initRoutes() {
 	s.router.Get("/status", statusHandler(s.db))
 
 	s.router.Route("/v1", func(r chi.Router) {
+		r.Use(appctx.Middleware(appctx.Config{
+			Environment: s.Config.Environment,
+			DB:          s.db,
+		}))
+
 		r.Use(cors.New(cors.Options{
 			AllowedOrigins:   []string{"*"},
 			AllowedMethods:   []string{http.MethodGet, http.MethodHead, http.MethodOptions, http.MethodPost, http.MethodPatch, http.MethodDelete},
@@ -24,15 +32,15 @@ func (s *Server) initRoutes() {
 		}).Handler)
 
 		r.Route("/auth", func(r chi.Router) {
-			r.Get("/{provider:[a-z]+}/connect", s.authService.HandleGetProviderConnect)
-			r.Get("/{provider:[a-z]+}/callback", s.authService.HandleGetProviderCallback)
-			r.Post("/token", s.authService.HandlePostToken)
+			r.Get("/{provider:[a-z]+}/connect", auth.HandleOauthProviderConnect)
+			r.Get("/{provider:[a-z]+}/callback", auth.HandleOauthProviderCallback)
+			r.Post("/token", auth.HandleExchangeOauthToken(s.oauthTokenSecretKey))
 		})
 
 		r.Route("/users", func(r chi.Router) {
-			r.Use(s.m.ValidateOauthToken)
+			r.Use(auth.OauthTokenValidatorMiddleware(s.oauthTokenSecretKey))
 
-			r.Get("/me", s.userService.HandleGetMe)
+			r.Get("/me", user.HandleGetMe)
 		})
 	})
 }
