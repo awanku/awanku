@@ -10,6 +10,7 @@ require (
 	github.com/asasmoyo/pq-hansip v0.0.0-20190502052219-d515e288ee85
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/cors v1.1.1
+	github.com/go-chi/render v1.0.1
 	github.com/go-ozzo/ozzo-validation/v4 v4.2.1
 	github.com/go-pg/pg/v10 v10.0.0-beta.2
 	github.com/golang-migrate/migrate/v4 v4.11.0
