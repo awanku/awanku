@@ -1,6 +1,10 @@
 package core
 
-import hansip "github.com/asasmoyo/pq-hansip"
+import (
+	"errors"
+
+	hansip "github.com/asasmoyo/pq-hansip"
+)
 
 type UserSettingsStore struct {
 	db *hansip.Cluster
@@ -22,18 +26,42 @@ func (u *UserSettingsStore) GetByID(id int64) (*Settings, error) {
 	return userSettings.Settings, nil
 }
 
-func (u *UserSettingsStore) GetByUserID(userID int64) (*Settings, error) {
-	var query = `
-		SELECT *
-		FROM user_settings
-		WHERE user_id = ?
-	`
+func (u *UserSettingsStore) GetOrCreateByUserID(userID int64) (*UserSettings, error) {
+    var query = `
+        insert into user_settings (user_id, settings)
+        values (?, ?)
+        on conflict (user_id) do update set user_id = ?
+        returning user_id, settings
+    `
 
-	var userSettings UserSettings
-	err := u.db.Query(&userSettings, query, userID)
-	if err != nil {
-		return nil, err
-	}
+    userSettings := &UserSettings{}
+    settings := &Settings{}
 
-	return userSettings.Settings, nil
+    err := u.db.WriterQuery(&userSettings, query, userID, settings, userID)
+    if err != nil {
+        return nil, err
+    }
+
+    return userSettings, nil
+}
+
+func (u *UserSettingsStore) Update(userSettings *UserSettings) (*Settings, error) {
+    if userSettings.ID <= 0 {
+        return nil, errors.New("model does not have id set")
+    }
+
+    var query = `
+        update user_settings
+        set settings = settings | ?
+        where id = ?
+        returning settings
+    `
+
+    settings := &Settings{}
+
+    err := u.db.WriterQuery(settings, query, userSettings.Settings, userSettings.ID)
+    if err != nil {
+        return nil, err
+    }
+    return settings, nil
 }

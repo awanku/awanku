@@ -37,6 +37,7 @@ func (s *Server) initRoutes() {
 
 			r.Get("/me", s.userService.HandleGetMe)
             r.Get("/settings", s.userSettingsService.HandleGetSettings)
+            r.Patch("/settings", s.userSettingsService.HandlePatch)
 		})
 	})
 }
