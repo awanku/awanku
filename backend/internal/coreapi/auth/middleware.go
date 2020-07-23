@@ -62,6 +62,12 @@ func OauthTokenValidatorMiddleware(oauthSecretKey []byte) func(http.Handler) htt
 				apihelper.InternalServerErrResp(w, err)
 				return
 			}
+			if err == errOauthTokenExpired {
+				apihelper.BadRequestErrResp(w, "invalid_request", map[string]string{
+					"token": "expired",
+				})
+				return
+			}
 
 			valid, err := core.ValidateHMAC(oauthSecretKey, []byte(decodedAccessToken), storedToken.AccessTokenHash)
 			if err != nil {

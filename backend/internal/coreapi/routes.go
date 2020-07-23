@@ -6,6 +6,8 @@ import (
 	"github.com/awanku/awanku/internal/coreapi/appctx"
 	"github.com/awanku/awanku/internal/coreapi/auth"
 	"github.com/awanku/awanku/internal/coreapi/user"
+	"github.com/awanku/awanku/internal/coreapi/workspace"
+	workspaceRepository "github.com/awanku/awanku/internal/coreapi/workspace/repository"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )
@@ -19,8 +21,9 @@ func (s *Server) initRoutes() {
 
 	s.router.Route("/v1", func(r chi.Router) {
 		r.Use(appctx.Middleware(appctx.Config{
-			Environment: s.Config.Environment,
-			DB:          s.db,
+			Environment:     s.Config.Environment,
+			DB:              s.db,
+			GithubAppConfig: s.githubAppConfig,
 		}))
 
 		r.Use(cors.New(cors.Options{
@@ -41,6 +44,26 @@ func (s *Server) initRoutes() {
 			r.Use(auth.OauthTokenValidatorMiddleware(s.oauthTokenSecretKey))
 
 			r.Get("/me", user.HandleGetMe)
+		})
+
+		r.Route("/workspaces", func(r chi.Router) {
+			r.Use(auth.OauthTokenValidatorMiddleware(s.oauthTokenSecretKey))
+
+			r.Get("/", workspace.HandleGetMyWorkspaces)
+
+			r.Route("/{workspace_id:[0-9]+}", func(r chi.Router) {
+				r.Use(workspace.CurrentWorkspaceMiddleware)
+
+				r.Route("/repositories", func(r chi.Router) {
+					r.Get("/", workspaceRepository.HandleListRepositories)
+					r.Get("/connections", workspaceRepository.HandleListConnections)
+
+					r.Route("/providers", func(r chi.Router) {
+						r.Get("/github", workspaceRepository.HandleConnectGithub)
+						r.Post("/github", workspaceRepository.HandleSaveGithubConnection)
+					})
+				})
+			})
 		})
 	})
 }

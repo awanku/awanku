@@ -15,7 +15,8 @@ test:
 	./scripts/test.sh
 
 update-deps:
-	go get -u $$(go list ./... | grep -v dist)
+	rm -rf dist/*
+	go get -u ./...
 	go mod tidy
 
 docker-build:
@@ -26,15 +27,24 @@ docker-push:
 	docker push docker.awanku.id/awanku/core-api:latest
 
 docker-test:
-	$(DOCKER_COMPOSE_TEST) build core-api
-	$(DOCKER_COMPOSE_TEST) up -d postgres-main
+	$(DOCKER_COMPOSE_TEST) up -d
 	$(DOCKER_COMPOSE_TEST) run core-api sh /app/core-api/scripts/docker-test.sh
 	$(DOCKER_COMPOSE_TEST) stop
 
-docker-run:
+docker-test-clean:
+	$(DOCKER_COMPOSE_TEST) down
+
+docker-dev-run:
 	$(DOCKER_COMPOSE_DEV) build core-api
 	$(DOCKER_COMPOSE_DEV) up -d
 	$(DOCKER_COMPOSE_DEV) exec core-api sh /app/core-api/database/up.sh
+	$(DOCKER_COMPOSE_DEV) up
+
+docker-dev-clean:
+	$(DOCKER_COMPOSE_DEV) down --remove-orphans --volumes
+
+docker-dev-psql:
+	$(DOCKER_COMPOSE_DEV) exec maindb psql -U awanku awanku
 
 docker-stop:
 	$(DOCKER_COMPOSE_DEV) stop

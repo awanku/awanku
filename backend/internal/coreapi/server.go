@@ -5,6 +5,7 @@ import (
 	"time"
 
 	hansip "github.com/asasmoyo/pq-hansip"
+	"github.com/awanku/awanku/pkg/core"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-pg/pg/v9"
@@ -14,6 +15,7 @@ type Server struct {
 	router              chi.Router
 	db                  *hansip.Cluster
 	oauthTokenSecretKey []byte
+	githubAppConfig     *core.GithubAppConfig
 
 	Config *Config
 }
@@ -29,6 +31,12 @@ func (s *Server) Init() error {
 		panic(err)
 	}
 	s.db = db
+
+	githubAppConfig, err := s.Config.GithubAppConfig()
+	if err != nil {
+		panic(err)
+	}
+	s.githubAppConfig = githubAppConfig
 
 	s.initRoutes()
 	return nil

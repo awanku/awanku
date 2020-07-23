@@ -32,6 +32,7 @@ func TestGetUserByID(t *testing.T) {
 
 func TestGetOrCreateUserByEmail(t *testing.T) {
 	ctx, close := testutil.Context()
+	ctx = appctx.CreateDatabaseTx(ctx)
 	defer close()
 
 	t.Run("new user", func(t *testing.T) {
@@ -64,15 +65,13 @@ func TestGetOrCreateUserByEmail(t *testing.T) {
 
 func TestSaveOauthAuthorizationCode(t *testing.T) {
 	ctx, close := testutil.Context()
+	ctx = appctx.CreateDatabaseTx(ctx)
 	defer close()
 
 	user := testutil.UserFactory(ctx, 1)[0]
 	code := faker.Word()
-	authCode, err := saveOauthAuthorizationCode(ctx, user.ID, code)
+	err := saveOauthAuthorizationCode(ctx, user.ID, code)
 	assert.NoError(t, err)
-	assert.Equal(t, code, authCode.Code)
-	assert.True(t, authCode.ExpiresAt.After(time.Now()))
-	assert.True(t, authCode.ExpiresAt.Before(time.Now().Add(5*time.Minute)))
 }
 
 func TestGetOauthAuthorizationCodeByCode(t *testing.T) {

@@ -96,19 +96,14 @@ func HandleOauthProviderCallback(w http.ResponseWriter, r *http.Request) {
 		Email: userData.Email,
 	}
 	user.SetOauth2Identifier(userData.Provider, &userData.Identifier)
-	if err := getOrCreateUserByEmail(r.Context(), user); err != nil {
-		apihelper.InternalServerErrResp(w, err)
-		return
-	}
 
-	codeStr, err := core.BuildOauthAuthorizationCode(oauthAuthorizationCodeLength)
+	authorizationCode, err := core.BuildOauthAuthorizationCode(oauthAuthorizationCodeLength)
 	if err != nil {
 		apihelper.InternalServerErrResp(w, err)
 		return
 	}
 
-	code, err := saveOauthAuthorizationCode(r.Context(), user.ID, codeStr)
-	if err != nil {
+	if err := registerUser(r.Context(), user, authorizationCode); err != nil {
 		apihelper.InternalServerErrResp(w, err)
 		return
 	}
@@ -121,7 +116,7 @@ func HandleOauthProviderCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	query := parsedRedirectTo.Query()
-	query.Set("code", code.Code)
+	query.Set("code", authorizationCode)
 	parsedRedirectTo.RawQuery = query.Encode()
 
 	apihelper.RedirectResp(w, parsedRedirectTo.String())
