@@ -10,6 +10,7 @@ import (
 // @Id api.v1.workspace.listAll
 // @Summary List all workspaces owned by current authenticated user
 // @Tags Workspace
+// @Security oauthAccessToken
 // @Router /v1/workspaces [get]
 // @Produce json
 // @Success 200 {array} core.Workspace

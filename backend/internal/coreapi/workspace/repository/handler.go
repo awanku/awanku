@@ -14,6 +14,7 @@ import (
 // @Id api.v1.workspace.repository.listAll
 // @Summary List all repositories in a workspace
 // @Tags Workspace
+// @Security oauthAccessToken
 // @Param workspace_id path integer true "Workspace id"
 // @Router /v1/workspaces/{workspace_id}/repositories [get]
 // @Produce json
@@ -64,6 +65,7 @@ func HandleListAllRepositories(w http.ResponseWriter, r *http.Request) {
 // @Id api.v1.workspace.connections.listAll
 // @Summary List all repository connections in a workspace
 // @Tags Workspace
+// @Security oauthAccessToken
 // @Param workspace_id path integer true "Workspace id"
 // @Router /v1/workspaces/{workspace_id}/connections [get]
 // @Produce json
@@ -90,6 +92,7 @@ func HandleListAllConnections(w http.ResponseWriter, r *http.Request) {
 // @Id api.v1.workspace.repository.provider.github.connect
 // @Summary Start connecting Github repository
 // @Tags Workspace
+// @Security oauthAccessToken
 // @Param workspace_id path integer true "Workspace id"
 // @Router /v1/workspaces/{workspace_id}/providers/github [get]
 // @Produce json
@@ -107,6 +110,7 @@ func HandleConnectGithub(w http.ResponseWriter, r *http.Request) {
 // @Id api.v1.workspace.repository.provider.github.save
 // @Summary Save Github repository connection
 // @Tags Workspace
+// @Security oauthAccessToken
 // @Param workspace_id path integer true "Workspace id"
 // @Router /v1/workspaces/{workspace_id}/providers/github [post]
 // @Produce json

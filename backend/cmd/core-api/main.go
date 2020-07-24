@@ -15,7 +15,7 @@ import (
 // @host api.awanku.id
 // @schemes	https
 
-// @securityDefinitions.apikey ApiKeyAuth
+// @securityDefinitions.apikey oauthAccessToken
 // @in header
 // @name Authorization
 // @securitydefinitions.oauth2.accessCode OAuth2AccessCode

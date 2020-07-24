@@ -10,7 +10,7 @@ import (
 // @Id api.v1.users.getMe
 // @Summary Get current user data
 // @Tags Users
-// @Security ApiKeyAuth
+// @Security oauthAccessToken
 // @Router /v1/users/me [get]
 // @Produce json
 // @Success 200 {object} core.User
