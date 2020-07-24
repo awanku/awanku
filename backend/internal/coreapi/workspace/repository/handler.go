@@ -11,7 +11,18 @@ import (
 	"github.com/awanku/awanku/pkg/core"
 )
 
-func HandleListRepositories(w http.ResponseWriter, r *http.Request) {
+// @Id api.v1.workspace.repository.listAll
+// @Summary List all repositories in a workspace
+// @Tags Workspace
+// @Param workspace_id path integer true "Workspace id"
+// @Router /v1/workspaces/{workspace_id}/repositories [get]
+// @Produce json
+// @Success 200 {array} core.Repository
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 404
+// @Failure 500 {object} apihelper.InternalServerError
+func HandleListAllRepositories(w http.ResponseWriter, r *http.Request) {
 	currentWorkspace := appctx.CurrentWorkspace(r.Context())
 
 	conns, err := getConnections(r.Context(), currentWorkspace.ID)
@@ -31,9 +42,8 @@ func HandleListRepositories(w http.ResponseWriter, r *http.Request) {
 			mut.Lock()
 			if err != nil {
 				errors = append(errors, err)
-			} else {
-				repositories = append(repositories, reps...)
 			}
+			repositories = append(repositories, reps...)
 			mut.Unlock()
 			wg.Done()
 		}(conn)
@@ -41,7 +51,7 @@ func HandleListRepositories(w http.ResponseWriter, r *http.Request) {
 	wg.Wait()
 
 	if len(errors) > 0 {
-		apihelper.InternalServerErrResp(w, fmt.Errorf("something failed: %v", errors))
+		apihelper.InternalServerErrResp(w, fmt.Errorf("failed fetching workspace repositories: %v", errors))
 		return
 	}
 
@@ -51,7 +61,18 @@ func HandleListRepositories(w http.ResponseWriter, r *http.Request) {
 	apihelper.JSON(w, http.StatusOK, repositories)
 }
 
-func HandleListConnections(w http.ResponseWriter, r *http.Request) {
+// @Id api.v1.workspace.connections.listAll
+// @Summary List all repository connections in a workspace
+// @Tags Workspace
+// @Param workspace_id path integer true "Workspace id"
+// @Router /v1/workspaces/{workspace_id}/connections [get]
+// @Produce json
+// @Success 200 {array} core.RepositoryConnection
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 404
+// @Failure 500 {object} apihelper.InternalServerError
+func HandleListAllConnections(w http.ResponseWriter, r *http.Request) {
 	currentWorkspace := appctx.CurrentWorkspace(r.Context())
 
 	conns, err := getConnections(r.Context(), currentWorkspace.ID)
@@ -66,11 +87,34 @@ func HandleListConnections(w http.ResponseWriter, r *http.Request) {
 	apihelper.JSON(w, http.StatusOK, conns)
 }
 
+// @Id api.v1.workspace.repository.provider.github.connect
+// @Summary Start connecting Github repository
+// @Tags Workspace
+// @Param workspace_id path integer true "Workspace id"
+// @Router /v1/workspaces/{workspace_id}/providers/github [get]
+// @Produce json
+// @Success 301
+// @Header 301 {string} location "setup github connection url"
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 404
+// @Failure 500 {object} apihelper.InternalServerError
 func HandleConnectGithub(w http.ResponseWriter, r *http.Request) {
 	url := appctx.GithubAppConfig(r.Context()).InstallURL
 	apihelper.RedirectResp(w, url)
 }
 
+// @Id api.v1.workspace.repository.provider.github.save
+// @Summary Save Github repository connection
+// @Tags Workspace
+// @Param workspace_id path integer true "Workspace id"
+// @Router /v1/workspaces/{workspace_id}/providers/github [post]
+// @Produce json
+// @Success 201
+// @Failure 400 {object} apihelper.HTTPError
+// @Failure 401 {object} apihelper.HTTPError
+// @Failure 404
+// @Failure 500 {object} apihelper.InternalServerError
 func HandleSaveGithubConnection(w http.ResponseWriter, r *http.Request) {
 	currentWorkspace := appctx.CurrentWorkspace(r.Context())
 

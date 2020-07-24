@@ -13,6 +13,8 @@ import (
 )
 
 func (s *Server) initRoutes() {
+	s.router.Use(baseMiddleware)
+
 	s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("See https://api.awanku.id/docs/ for API documentation"))
 	})
@@ -28,7 +30,7 @@ func (s *Server) initRoutes() {
 
 		r.Use(cors.New(cors.Options{
 			AllowedOrigins:   []string{"*"},
-			AllowedMethods:   []string{http.MethodGet, http.MethodHead, http.MethodOptions, http.MethodPost, http.MethodPatch, http.MethodDelete},
+			AllowedMethods:   []string{http.MethodGet, http.MethodHead, http.MethodPost, http.MethodPatch, http.MethodDelete},
 			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 			AllowCredentials: true,
 			MaxAge:           5 * 60,
@@ -49,14 +51,14 @@ func (s *Server) initRoutes() {
 		r.Route("/workspaces", func(r chi.Router) {
 			r.Use(auth.OauthTokenValidatorMiddleware(s.oauthTokenSecretKey))
 
-			r.Get("/", workspace.HandleGetMyWorkspaces)
+			r.Get("/", workspace.HandleListAll)
 
 			r.Route("/{workspace_id:[0-9]+}", func(r chi.Router) {
 				r.Use(workspace.CurrentWorkspaceMiddleware)
 
 				r.Route("/repositories", func(r chi.Router) {
-					r.Get("/", workspaceRepository.HandleListRepositories)
-					r.Get("/connections", workspaceRepository.HandleListConnections)
+					r.Get("/", workspaceRepository.HandleListAllRepositories)
+					r.Get("/connections", workspaceRepository.HandleListAllConnections)
 
 					r.Route("/providers", func(r chi.Router) {
 						r.Get("/github", workspaceRepository.HandleConnectGithub)
@@ -66,4 +68,12 @@ func (s *Server) initRoutes() {
 			})
 		})
 	})
+}
+
+func baseMiddleware(next http.Handler) http.Handler {
+	f := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "max-age=0, private, must-revalidate")
+		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+	}
+	return http.HandlerFunc(f)
 }

@@ -59,3 +59,6 @@ swagger-docker-build:
 swagger-docker-push:
 	docker tag awanku/core-api-docs:latest docker.awanku.id/awanku/core-api-docs:latest
 	docker push docker.awanku.id/awanku/core-api-docs:latest
+
+swagger-docker-run:
+	docker run --rm -p 8888:80 awanku/core-api-docs:latest

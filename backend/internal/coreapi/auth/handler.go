@@ -23,7 +23,7 @@ const oauthTokenLength = 20
 // @Param queryParam query getProviderConnectParam true "Query param"
 // @Router /v1/auth/{provider}/connect [get]
 // @Produce json
-// @Success 301 {string} string
+// @Success 301
 // @Header 301 {string} location "provider login url"
 // @Failure 400 {object} apihelper.HTTPError
 // @Failure 401 {object} apihelper.HTTPError
@@ -57,7 +57,7 @@ func HandleOauthProviderConnect(w http.ResponseWriter, r *http.Request) {
 // @Param queryParam query getProviderCallbackParam true "Query param"
 // @Router /v1/auth/{provider}/callback [get]
 // @Produce json
-// @Success 301 {string} string
+// @Success 301
 // @Header 301 {string} location "return to url"
 // @Failure 400 {object} apihelper.HTTPError
 // @Failure 401 {object} apihelper.HTTPError
