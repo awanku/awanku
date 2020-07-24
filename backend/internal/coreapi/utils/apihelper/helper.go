@@ -8,7 +8,7 @@ import (
 )
 
 func JSON(w http.ResponseWriter, status int, payload interface{}) {
-	w.Header().Set("content-type", "application/json")
+	w.Header().Set("content-type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
 	err := json.NewEncoder(w).Encode(payload)
 	if err != nil {

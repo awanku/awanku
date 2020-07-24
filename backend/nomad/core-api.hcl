@@ -48,6 +48,13 @@ job "awanku-stack-core-api" {
                 ENVIRONMENT = "production"
                 DATABASE_URL = "postgres://awanku:rahasia@${NOMAD_IP_maindb_pg}:${NOMAD_PORT_maindb_pg}/awanku?sslmode=disable"
                 OAUTH_SECRET_KEY = "supersecretkey"
+                GITHUB_APP_ID = 73537
+                GITHUB_APP_PRIVATE_KEY_PATH = "/local/github.private-key.pem"
+                GITHUB_APP_INSTALL_URL = "https://github.com/apps/awanku-development/installations/new"
+            }
+            template {
+                data = "{{ key \"awanku/credentials/github/dev.private-key.pem\" }}"
+                destination = "local/github.private-key.pem"
             }
             resources {
                 network {
