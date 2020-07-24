@@ -8,8 +8,7 @@ import (
 	"github.com/awanku/awanku/internal/coreapi/appctx"
 	"github.com/awanku/awanku/pkg/core"
 	"github.com/bradleyfalzon/ghinstallation"
-	"github.com/google/go-github/github"
-	githubService "github.com/google/go-github/github"
+	githubService "github.com/google/go-github/v32/github"
 	"golang.org/x/oauth2"
 )
 
@@ -67,12 +66,12 @@ func fetchGithubRepositories(ctx context.Context, installationID int64) ([]*core
 	}
 
 	client := githubService.NewClient(&http.Client{Transport: transport})
-	token, _, err := client.Apps.CreateInstallationToken(ctx, installationID)
+	token, _, err := client.Apps.CreateInstallationToken(ctx, installationID, &githubService.InstallationTokenOptions{})
 	if err != nil {
 		return []*core.Repository{}, err
 	}
 
-	client = github.NewClient(oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token.GetToken()})))
+	client = githubService.NewClient(oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token.GetToken()})))
 	repos, _, err := client.Apps.ListRepos(ctx, nil)
 	if err != nil {
 		return []*core.Repository{}, err

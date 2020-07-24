@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/awanku/awanku/pkg/core"
-	githubService "github.com/google/go-github/github"
+	githubService "github.com/google/go-github/v32/github"
 	"golang.org/x/oauth2"
 )
 
