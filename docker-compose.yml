@@ -1,0 +1,28 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/dev.Dockerfile
+    working_dir: /app
+    environment:
+      BUNDLE_PATH: /bundle
+      YARN_CACHE_FOLDER: /yarn
+      NODE_ENV: development
+      DATABASE_HOST: postgres
+      DATABASE_USERNAME: awanku
+      DATABASE_PASSWORD: secret
+    volumes:
+      - .:/app
+      - bundle:/bundle
+      - yarn:/yarn
+    ports:
+      - "3000:3000"
+  postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: awanku
+      POSTGRES_PASSWORD: secret
+volumes:
+  bundle: {}
+  yarn: {}

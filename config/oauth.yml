@@ -1,0 +1,6 @@
+github:
+  client_id: <%= ENV.fetch("OAUTH_GITHUB_CLIENT_ID") %>
+  client_secret: <%= ENV.fetch("OAUTH_GITHUB_CLIENT_SECRET") %>
+google:
+  client_id: <%= ENV.fetch("OAUTH_GOOGLE_CLIENT_ID") %>
+  client_secret: <%= ENV.fetch("OAUTH_GOOGLE_CLIENT_SECRET") %>
